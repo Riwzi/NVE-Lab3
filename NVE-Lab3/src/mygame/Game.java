@@ -144,6 +144,8 @@ public class Game extends BaseAppState {
             needCleaning = false;
         }
         
+       game.startGame();
+
         diskStore = new ArrayList();
         //Set up HUD
         initHud();
@@ -380,6 +382,10 @@ public class Game extends BaseAppState {
     public void update(float tpf) {
         time += tpf;
         String text = "Time: " + getRemainingTime() + "\n";
+        
+        //Apply change for data
+        
+        
         for (Disk d: diskStore) {
             //Move the disk
             d.move(d.getVelocity().mult(tpf));
@@ -407,7 +413,7 @@ public class Game extends BaseAppState {
             }
             d.setVelocity(new Vector2f(newX, newY));
             
-            //Collision detection with frame
+           /* //Collision detection with frame
             float boundary = FREE_AREA_WIDTH/2;
             d.frameCollision(-boundary, boundary, -boundary, boundary, tpf);
             
@@ -420,7 +426,7 @@ public class Game extends BaseAppState {
             
             if (d instanceof Player) {
                 text += ((Player) d).getName() + ": " + d.getScore() + "\n";
-            }
+            }*/
         }
         hudText.setText(text);
     }
