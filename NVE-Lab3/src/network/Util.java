@@ -10,6 +10,9 @@ import java.util.ArrayList;
 
 public class Util {
     
+    public static final String HOSTNAME = "127.0.0.1";
+    public static final int PORT = 7006;
+    
     public static void initialiseSerializables() {
         Serializer.registerClasses(
                 OpenConnectionMessage.class,
