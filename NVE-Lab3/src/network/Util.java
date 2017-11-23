@@ -250,6 +250,11 @@ public class Util {
         }
     }
     
+    // Need a message for clients to move
+    // It should contain the diskID and a constant describing which direction it was, ex: 1 for 'up', 2 for 'down', etc.
+    // We cant use the VelocityChangeMessage for this since it straight up sets the velocity, can cause problems if say a collision occurs while the message is being sent
+    // Let server handle velocity changes (?)
+    
     @Serializable
     public static class PositionChangeMessage extends MyAbstractMessage {
         private Vector2f newPosition;
