@@ -31,6 +31,9 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -124,6 +127,9 @@ public class Game extends BaseAppState {
     //A hash table mapping player id's to Player instances. Used to allow any number of players
     private HashMap<String, Player> playerMap;
     private Map<Integer, String> playerName;
+    private int userID;
+    private LinkedBlockingQueue<Integer> requestToSend; 
+
     
     @Override
     protected void initialize(Application app) {
@@ -212,9 +218,9 @@ public class Game extends BaseAppState {
         playerName.put(7, "VII");
         playerName.put(8, "VIII");
         playerName.put(9, "IX");
-        for (int i = 0; i<N_PLAYERS; i++) {
+        /*for (int i = 0; i<N_PLAYERS; i++) {
             addLocalPlayer(i, list.get(i));
-        }
+        }*/
         /*
         for (int i = N_PLAYERS; i<9; i++) {
             addPlayer(i, list.get(i));
@@ -299,11 +305,12 @@ public class Game extends BaseAppState {
     }
     
     //Adds a local player to the Game. A local player has KeyInputs
-    private void addLocalPlayer(int player_id, Vector2f position) {
+    public void addLocalPlayer(int player_id, Vector2f position) {
+        this.userID = player_id;
         String name = playerName.get(player_id+1);
         String disk_id = getNextID();
         Player player = new Player(sapp.getAssetManager(), PLAYER_R, disk_id, name);
-        Geometry playerGeometry = player.createGeometry(PLAYER_R, FRAME_THICKNESS);
+        Geometry playerGeometry = player.createGeometry(PLAYER_R, FRAME_THICKNESS, ColorRGBA.Blue);
         sapp.getRootNode().attachChild(player);
         player.attachChild(playerGeometry);
         player.attachChild(createDescription(player_id+1));
@@ -331,11 +338,11 @@ public class Game extends BaseAppState {
     }
     
     //Adds a non-local player (no keyboard inputs)
-    private void addPlayer(int player_id, Vector2f position) {
+    public void addPlayer(int player_id, Vector2f position) {
         String name = playerName.get(player_id+1);
         String disk_id = getNextID();
         Player player = new Player(sapp.getAssetManager(), PLAYER_R, disk_id, name);
-        Geometry playerGeometry = player.createGeometry(PLAYER_R, FRAME_THICKNESS);
+        Geometry playerGeometry = player.createGeometry(PLAYER_R, FRAME_THICKNESS, ColorRGBA.Green);
         sapp.getRootNode().attachChild(player);
         player.attachChild(playerGeometry);
         player.attachChild(createDescription(player_id+1));
@@ -364,17 +371,21 @@ public class Game extends BaseAppState {
     private AnalogListener analogListener = new AnalogListener() {
         public void onAnalog(String name, float value, float tpf) {
             String sub = name.substring(0, 2);
-            if (sub.equals("U:")) {
-               //TODO ADD SEND UP MESSAGE
-            }
-            if (sub.equals("D:")) {
-               //TODO ADD DOWN MESSAGE
-            }
-            if (sub.equals("L:")) {
-               //TODO ADD L MESSAGE
-            }
-            if (sub.equals("R:")) {
-               //TODO ADD R MESSAGE
+            try {
+                if (sub.equals("U:")) {
+                   requestToSend.put(0);    
+                }
+                if (sub.equals("D:")) {
+                   requestToSend.put(1);
+                }
+                if (sub.equals("L:")) {
+                   requestToSend.put(2);
+                }
+                if (sub.equals("R:")) {
+                   requestToSend.put(3);
+                }
+               } catch (InterruptedException ex) {
+                        Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     };
@@ -599,4 +610,9 @@ public class Game extends BaseAppState {
         sapp.getGuiNode().detachChild(hudText_bis);
         running = true;
     }
+    
+    public void setRequestToSend(LinkedBlockingQueue<Integer> requestToSend){
+        this.requestToSend = requestToSend;
+    } 
+
 }

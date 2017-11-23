@@ -27,7 +27,7 @@ import network.Util.OpenConnectionMessage;
  * @author Quentin
  */
 public class ClientNetworkMessageListener
-            implements MessageListener<Client>, Runnable{
+            implements MessageListener<Client>{
     
     private Client serverConnection;
     private TheClient theClient;
@@ -45,30 +45,23 @@ public class ClientNetworkMessageListener
         // these if statements is a clumsy but simple (and working) 
         // solution; better would be to code behavour in the message 
         // classes and call them on the message
-        if (m instanceof Util.WelcomeClientMessage) {
-            // 1) carry out the change and 2) send back an ack to sender
-            Util.WelcomeClientMessage msg = (Util.WelcomeClientMessage) m;
-            int originalSender = msg.getSenderID();
-            int messageID = msg.getMessageID();
-
-            // NB! ALL CHANGES TO THE SCENE GRAPH MUST BE DONE IN THE 
-            // MAIN THREAD! THE TECHNIQUE IS TO SEND OVER A PIECE OF CODE 
-            // (A "CALLABLE") FROM THE NETWORKING THREAD (THIS THREAD) TO 
-            // THE MAIN THREAD (THE ONE WITH THE SCENE GRAPH) AND HAVE 
-            // THE MAIN THREAD EXECUTE IT. (This is part of how threads 
-            // communicate in Java and NOT something specific to 
-            // JMonkeyEngine)
+        
+        
+        if (m instanceof Util.GameStartMessage) {
+            
 
             Future result;
             result = theClient.enqueue(new Callable() {
                 @Override
                 public Object call() throws Exception {
-                    theClient.createGame();
+                    theClient.startGame();
                     return true;
                 }
             });
 
-        }else if (m instanceof Util.GameActiveMessage){
+        }else if (m instanceof Util.GameSetupMessage){
+            GameSetupMessage msg = (GameSetupMessage) m;
+            
             Future result = theClient.enqueue(new Callable() {
                 @Override
                 public Object call() throws Exception {
@@ -79,24 +72,4 @@ public class ClientNetworkMessageListener
         }
     }
 
-    @Override
-    public void run() {
-         serverConnection.addMessageListener(this,
-                    PlayerLight.class,
-                    OpenConnectionMessage.class,
-                    WelcomeClientMessage.class,
-                    NameTakenMessage.class,
-                    GameActiveMessage.class,
-                    DisconnectMessage.class,
-                    GameSetupMessage.class,
-                    GameStartMessage.class,
-                    GameOverMessage.class,
-                    VelocityChangeMessage.class,
-                    PositionChangeMessage.class,
-                    PositionAndVelocityChangeMessage.class,
-                    ScoreChange.class,
-                    PositionsUpdateMessage.class,
-                    ScoreUpdateMessage.class,
-                    TimeUpdateMessage.class);
-    }
 }

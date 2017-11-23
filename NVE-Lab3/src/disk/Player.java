@@ -16,8 +16,8 @@ public class Player extends Disk{
         this.name = name;
     }
     
-    public Geometry createGeometry(float radius, float height) {
-        Geometry disk = super.createGeometry(radius, height, ColorRGBA.Blue);
+    public Geometry createGeometry(float radius, float height, ColorRGBA color) {
+        Geometry disk = super.createGeometry(radius, height, color);
         return disk;
     }
     

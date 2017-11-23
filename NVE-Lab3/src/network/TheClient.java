@@ -17,8 +17,10 @@ import com.jme3.network.MessageListener;
 import com.jme3.network.Network;
 import com.jme3.system.JmeContext;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
+import java.util.concurrent.LinkedBlockingQueue;
 import mygame.Ask;
 import mygame.Game;
 import network.Util.*;
@@ -35,6 +37,7 @@ public class TheClient extends SimpleApplication implements ClientStateListener{
     private float time = 0f;
     private boolean running = true;
     private ClientNetworkMessageListener clientListener;
+    private ClientSender clientSender;
     
     // the connection back to the server
     private Client serverConnection;
@@ -56,7 +59,7 @@ public class TheClient extends SimpleApplication implements ClientStateListener{
     
     public static void main(String[] args) {
         Util.initialiseSerializables();
-        new TheClient(Util.HOSTNAME, Util.PORT).start(JmeContext.Type.Display);
+        new TheClient(Util.HOSTNAME, Util.PORT).start();
     }
 
     @Override
@@ -65,18 +68,37 @@ public class TheClient extends SimpleApplication implements ClientStateListener{
         setDisplayFps(false);
         
         try {
+            //Initialize the queue to use to send informations
+            LinkedBlockingQueue<Integer> requestToSend = new LinkedBlockingQueue<>(); 
+            this.clientSender = new ClientSender(serverConnection, requestToSend);
+            game.setRequestToSend(requestToSend);
+            
+            
             serverConnection = Network.connectToServer(hostname, port);            
             addAskInputs();
       
             // this make the client react on messages when they arrive by
             // calling messageReceived in ClientNetworkMessageListener
             clientListener = new ClientNetworkMessageListener(serverConnection, this);
-            clientListener.run();
+            serverConnection.addMessageListener(clientListener,
+                    PlayerLight.class,
+                    NameTakenMessage.class,
+                    GameActiveMessage.class,
+                    DisconnectMessage.class,
+                    GameSetupMessage.class,
+                    GameStartMessage.class,
+                    GameOverMessage.class,
+                    VelocityChangeMessage.class,
+                    PositionChangeMessage.class,
+                    PositionAndVelocityChangeMessage.class,
+                    ScoreChange.class,
+                    PositionsUpdateMessage.class,
+                    ScoreUpdateMessage.class,
+                    TimeUpdateMessage.class);
             
             // finally start the communication channel to the server
+            serverConnection.addClientStateListener(this);
             serverConnection.start();
-            if(serverConnection.isConnected())
-                System.out.println("Connected to server");
             
         }catch (IOException ex) {
             ex.printStackTrace();
@@ -93,8 +115,7 @@ public class TheClient extends SimpleApplication implements ClientStateListener{
                 if (name.equals("Exit")) {
                     TheClient.this.stop();
                 } else if (name.equals("Restart")) {
-                    OpenConnectionMessage msg = new OpenConnectionMessage(1, "Player1");
-                    serverConnection.send(msg);
+                    createGame();
                 }
             }
         }
@@ -133,6 +154,15 @@ public class TheClient extends SimpleApplication implements ClientStateListener{
         running = true;
     }
     
+    public void putConfig(int userID ,ArrayList<PlayerLight> playersList){
+        for (PlayerLight player : playersList){
+            if(player.getID() != userID)
+                game.addPlayer(player.getID(), player.getPosition());
+            else
+                game.addLocalPlayer(userID, player.getPosition());
+        }
+    }
+    
     public void addAskInputs(){
         inputManager.addMapping("Restart", new KeyTrigger(KeyInput.KEY_P));
         inputManager.addMapping("Exit", new KeyTrigger(KeyInput.KEY_E));
@@ -140,12 +170,13 @@ public class TheClient extends SimpleApplication implements ClientStateListener{
     }
     @Override
     public void clientConnected(Client c) {
+        System.out.println("Client connected succesfully !");
         createGame();
     }
 
     @Override
     public void clientDisconnected(Client c, DisconnectInfo info) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        
     }
 
 
