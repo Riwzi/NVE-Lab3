@@ -25,6 +25,7 @@ public abstract class Disk extends Node implements Comparable<Disk>{
     protected float mass;
     protected String id;
     protected int score;
+    protected int lastUpdate;
     
     public Disk(AssetManager assetManager, float radius, String id) {
         this.assetManager = assetManager;
@@ -34,6 +35,7 @@ public abstract class Disk extends Node implements Comparable<Disk>{
         this.mass = (float)(Math.PI) * radius * radius;
         this.id = id;
         this.score = 0;
+        this.lastUpdate = 0;
     }
     
     public Geometry createGeometry(float radius, float height, ColorRGBA color) {

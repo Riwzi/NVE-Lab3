@@ -40,6 +40,8 @@ public class Game extends BaseAppState {
     
     private SimpleApplication sapp;
     private boolean needCleaning = false;
+    private boolean running;
+    private BitmapText hudText_bis;
     
     private Frame Frame;
     
@@ -144,6 +146,9 @@ public class Game extends BaseAppState {
             needCleaning = false;
         }
         
+        
+        
+
         diskStore = new ArrayList();
         //Set up HUD
         initHud();
@@ -155,6 +160,8 @@ public class Game extends BaseAppState {
         initPlayers();
         //Set up disks
         initDisks();
+        
+        addWatingToStart();
     }
     
     @Override
@@ -358,71 +365,75 @@ public class Game extends BaseAppState {
         public void onAnalog(String name, float value, float tpf) {
             String sub = name.substring(0, 2);
             if (sub.equals("U:")) {
-                Player player = playerMap.get(name.substring(2));
-                player.addVelocity(new Vector2f(0,acceleration*tpf));
+               //TODO ADD SEND UP MESSAGE
             }
             if (sub.equals("D:")) {
-                Player player = playerMap.get(name.substring(2));
-                player.addVelocity(new Vector2f(0,-acceleration*tpf));
+               //TODO ADD DOWN MESSAGE
             }
             if (sub.equals("L:")) {
-                Player player = playerMap.get(name.substring(2));
-                player.addVelocity(new Vector2f(-acceleration*tpf,0));
+               //TODO ADD L MESSAGE
             }
             if (sub.equals("R:")) {
-                Player player = playerMap.get(name.substring(2));
-                player.addVelocity(new Vector2f(acceleration*tpf,0));
+               //TODO ADD R MESSAGE
             }
         }
     };
 
     @Override
     public void update(float tpf) {
-        time += tpf;
-        String text = "Time: " + getRemainingTime() + "\n";
-        for (Disk d: diskStore) {
-            //Move the disk
-            d.move(d.getVelocity().mult(tpf));
+        if(running){
             
-            //Apply friction
-            float friction_tpf = friction * tpf;
-            Vector2f velocity = d.getVelocity();
-            float newX;
-            float newY;
-            float oldX = velocity.getX();
-            float oldY = velocity.getY();
-            if (oldX < -friction_tpf) {
-                newX = oldX + friction_tpf;
-            } else if (oldX > friction_tpf) {
-                newX = oldX - friction_tpf;
-            } else {
-                newX = 0;
-            }
-            if (oldY < -friction_tpf) {
-                newY = oldY + friction_tpf;
-            } else if (oldY > friction_tpf) {
-                newY = oldY - friction_tpf;
-            } else {
-                newY = 0;
-            }
-            d.setVelocity(new Vector2f(newX, newY));
-            
-            //Collision detection with frame
-            float boundary = FREE_AREA_WIDTH/2;
-            d.frameCollision(-boundary, boundary, -boundary, boundary, tpf);
-            
-            //Collision detection with other disks
-            for (Disk otherDisk: diskStore) {
-                if (!d.getId().equals(otherDisk.getId())) {
-                    d.diskCollision(otherDisk, tpf);
+            time += tpf;
+            String text = "Time: " + getRemainingTime() + "\n";
+
+            //TODO Apply changes for data
+
+
+            for (Disk d: diskStore) {
+                //Move the disk
+                d.move(d.getVelocity().mult(tpf));
+
+                //Apply friction
+                float friction_tpf = friction * tpf;
+                Vector2f velocity = d.getVelocity();
+                float newX;
+                float newY;
+                float oldX = velocity.getX();
+                float oldY = velocity.getY();
+                if (oldX < -friction_tpf) {
+                    newX = oldX + friction_tpf;
+                } else if (oldX > friction_tpf) {
+                    newX = oldX - friction_tpf;
+                } else {
+                    newX = 0;
                 }
+                if (oldY < -friction_tpf) {
+                    newY = oldY + friction_tpf;
+                } else if (oldY > friction_tpf) {
+                    newY = oldY - friction_tpf;
+                } else {
+                    newY = 0;
+                }
+                d.setVelocity(new Vector2f(newX, newY));
+
+               /* //Collision detection with frame
+                float boundary = FREE_AREA_WIDTH/2;
+                d.frameCollision(-boundary, boundary, -boundary, boundary, tpf);
+
+                //Collision detection with other disks
+                for (Disk otherDisk: diskStore) {
+                    if (!d.getId().equals(otherDisk.getId())) {
+                        d.diskCollision(otherDisk, tpf);
+                    }
+                }
+
+                if (d instanceof Player) {
+                    text += ((Player) d).getName() + ": " + d.getScore() + "\n";
+                }*/
             }
-            
-            if (d instanceof Player) {
-                text += ((Player) d).getName() + ": " + d.getScore() + "\n";
-            }
+            hudText.setText(text);
         }
-        hudText.setText(text);
+        
     }
     
     // Returns a node with geometry "stripes" (boxes) in the form of Roman numbers
@@ -572,5 +583,20 @@ public class Game extends BaseAppState {
         Geometry stripe = new Geometry("Stripe", s);
         stripe.setMaterial(mat);
         return stripe;
+    }
+    
+    protected void addWatingToStart(){
+        BitmapFont myFont = sapp.getAssetManager().loadFont("Interface/Fonts/Console.fnt");
+        BitmapText hudText_bis = new BitmapText(myFont, false);
+        hudText_bis.setSize(myFont.getCharSet().getRenderedSize() * 3);
+        hudText_bis.setColor(ColorRGBA.White);
+        hudText_bis.setText("GAME IS GOING TO START");
+        hudText_bis.setLocalTranslation(40, hudText_bis.getLineHeight()*10, 0);
+        sapp.getGuiNode().attachChild(hudText_bis);
+    }
+    
+    public void startGame(){
+        sapp.getGuiNode().detachChild(hudText_bis);
+        running = true;
     }
 }

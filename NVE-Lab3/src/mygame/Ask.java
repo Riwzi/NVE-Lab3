@@ -28,15 +28,17 @@ public class Ask extends BaseAppState {
     
     @Override
     protected void onEnable() {
+        System.out.println("Ok");
         System.out.println("Ask: onEnable");
         BitmapFont myFont = sapp.getAssetManager().loadFont("Interface/Fonts/Console.fnt");
         BitmapText hudText = new BitmapText(myFont, false);
         hudText.setSize(myFont.getCharSet().getRenderedSize() * 3);
         hudText.setColor(ColorRGBA.White);
-        hudText.setText("PRESS P TO RESTART AND\nE TO EXIT");
+        hudText.setText("PRESS P TO START A NEW GAME AND\nE TO EXIT");
         hudText.setLocalTranslation(60, hudText.getLineHeight()*10, 0);
         sapp.getGuiNode().attachChild(hudText);
     }
+    
     
     @Override
     protected void onDisable() {
