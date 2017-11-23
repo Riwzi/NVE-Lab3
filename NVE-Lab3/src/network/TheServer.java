@@ -43,8 +43,7 @@ public class TheServer extends SimpleApplication {
     public static void main(String[] args) {
         System.out.println("Server initializing");
         Util.initialiseSerializables();
-        //new TheServer(Util.PORT).start(JmeContext.Type.Headless);
-        new TheServer(8001).start(JmeContext.Type.Headless);
+        new TheServer(Util.PORT).start(JmeContext.Type.Headless);
     }
 
     public TheServer(int port) {
@@ -77,7 +76,7 @@ public class TheServer extends SimpleApplication {
         // add a listener that reacts on incoming network packets
         //server.addMessageListener(new ServerListener());
         server.addConnectionListener(new MyConnectionListener()); // ?
-        System.out.println("ServerListener aktivated and added to server");
+        System.out.println("ServerListener activated and added to server");
     }
 
     @Override
@@ -117,6 +116,7 @@ public class TheServer extends SimpleApplication {
         public void connectionAdded(Server s, HostedConnection c) {
             // Add player to game, assign unique id
             System.out.println("Server knows that client #"+c.getId() + " is ready");
+            
             
         }
         @Override
