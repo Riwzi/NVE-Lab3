@@ -86,7 +86,7 @@ public class TheServer extends SimpleApplication {
         
         // add a listener that reacts on incoming network packets
         server.addMessageListener(new ServerListener(), 
-                Util.GameOverMessage.class); //TODO: fix messages
+                Util.MoveMessage.class);
         System.out.println("ServerListener activated and added to server");
         // add a listener that reacts on connections
         server.addConnectionListener(new MyConnectionListener());
@@ -101,6 +101,8 @@ public class TheServer extends SimpleApplication {
             if (Game.getRemainingTime() <= 0) {
                 game.setEnabled(false);
                 ask.setEnabled(true);
+                //TODO: send gameOverMessage here
+                
             } else {
                 ArrayList<Disk> diskStore = game.getDisks();
                 for (Disk disk: diskStore) {
@@ -149,8 +151,25 @@ public class TheServer extends SimpleApplication {
     private class ServerListener implements MessageListener<HostedConnection> {
         @Override
         public void messageReceived(HostedConnection source, Message m) {
-            if (m instanceof Util.GameOverMessage) { //TODO replace with the actual messages the server should listen for
-                System.out.println("GameOverMessage from client #" + source.getId());
+            if (m instanceof Util.MoveMessage) {
+                System.out.println("MoveMessage from client #" + source.getId());
+                final int connectionId = source.getId();
+                final int direction = ((Util.MoveMessage) m).getDirection();
+                
+                /* ???
+                Future result = TheServer.this.enqueue(new Callable() {
+                    @Override
+                    public Object call() {
+                        //Get the player disk
+                        Player player = game.getPlayer(connPlayerMap.get(connectionId));
+
+                        //Increase the velocity in the given direction
+                        Vector2f velocity = new Vector2f();
+                        player.addVelocity(velocity);
+                        return true;
+                    }
+                });
+                */
             } else {
                 // This should only happen if the clients sends messages they shouldn't
                 // Programming error
