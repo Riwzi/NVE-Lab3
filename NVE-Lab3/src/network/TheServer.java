@@ -19,11 +19,11 @@ import com.jme3.system.JmeContext;
 import disk.Disk;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Future;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import mygame.Ask;
@@ -41,7 +41,7 @@ public class TheServer extends SimpleApplication {
     private final int port;
     
     private ConcurrentLinkedQueue<Util.MyAbstractMessage> incoming;
-    private BlockingQueue<Util.MyAbstractMessage> outgoing;
+    private LinkedBlockingQueue<Util.MyAbstractMessage> outgoing;
     private BiMap<Integer,Integer> connPlayerMap; //Maps the connectionId to a playerId (need to have this as a map if lots of clients connect and disconnect, as we only have 9 playerids).
     
     private Ask ask = new Ask();
@@ -58,6 +58,7 @@ public class TheServer extends SimpleApplication {
     public TheServer(int port) {
         this.port = port;
         this.connPlayerMap = new BiMap();
+        this.outgoing = new LinkedBlockingQueue();
         
         ask.setEnabled(false);
         game.setEnabled(true);
