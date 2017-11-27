@@ -19,6 +19,7 @@ import com.jme3.system.JmeContext;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
 import mygame.Ask;
@@ -73,13 +74,17 @@ public class TheClient extends SimpleApplication implements ClientStateListener{
             this.clientSender = new ClientSender(serverConnection, requestToSend);
             game.setRequestToSend(requestToSend);
             
+            ConcurrentHashMap< Integer, InformationReceived > updateInfos = new ConcurrentHashMap<>();
+            game.setUpdateInfos(updateInfos);
             
+            
+           
             serverConnection = Network.connectToServer(hostname, port);            
             addAskInputs();
       
             // this make the client react on messages when they arrive by
             // calling messageReceived in ClientNetworkMessageListener
-            clientListener = new ClientNetworkMessageListener(serverConnection, this);
+            clientListener = new ClientNetworkMessageListener(serverConnection, this, updateInfos);
             serverConnection.addMessageListener(clientListener,
                     PlayerLight.class,
                     NameTakenMessage.class,
@@ -99,6 +104,7 @@ public class TheClient extends SimpleApplication implements ClientStateListener{
             // finally start the communication channel to the server
             serverConnection.addClientStateListener(this);
             serverConnection.start();
+            clientSender.run();
             
         }catch (IOException ex) {
             ex.printStackTrace();

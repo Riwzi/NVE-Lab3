@@ -15,7 +15,9 @@ import com.jme3.network.MessageListener;
 import com.jme3.network.Network;
 import com.jme3.system.JmeContext;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Future;
 import mygame.Ask;
 import mygame.Game;
@@ -31,10 +33,12 @@ public class ClientNetworkMessageListener
     
     private Client serverConnection;
     private TheClient theClient;
+    ConcurrentHashMap< Integer, InformationReceived > updateInfos;
 
-    public ClientNetworkMessageListener(Client server, TheClient theClient) {
+    public ClientNetworkMessageListener(Client server, TheClient theClient, ConcurrentHashMap< Integer, InformationReceived > updateInfos) {
         serverConnection = server;
         this.theClient = theClient;
+        this.updateInfos = updateInfos;
     }
     
          
@@ -61,11 +65,13 @@ public class ClientNetworkMessageListener
 
         }else if (m instanceof Util.GameSetupMessage){
             GameSetupMessage msg = (GameSetupMessage) m;
+            final ArrayList<PlayerLight> players = msg.getPlayers();
             
             Future result = theClient.enqueue(new Callable() {
                 @Override
                 public Object call() throws Exception {
-                    theClient.startGame();
+                    //Todo change
+                    theClient.putConfig(1, players);
                     return true;
                 }
             });
