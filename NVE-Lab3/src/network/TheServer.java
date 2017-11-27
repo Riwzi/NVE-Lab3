@@ -60,10 +60,12 @@ public class TheServer extends SimpleApplication {
         this.connPlayerMap = new BiMap();
         this.outgoing = new LinkedBlockingQueue();
         
-        ask.setEnabled(false);
-        game.setEnabled(true);
+        ask.setEnabled(true);
+        game.setEnabled(false);
         stateManager.attach(game);
         stateManager.attach(ask);
+        
+        this.countdownRemaining = this.countdown;
     }
 
     @Override
@@ -101,6 +103,7 @@ public class TheServer extends SimpleApplication {
             if (Game.getRemainingTime() <= 0) {
                 game.setEnabled(false);
                 ask.setEnabled(true);
+                this.countdownRemaining = this.countdown;
                 //TODO: send gameOverMessage here
                 
             } else {
@@ -132,6 +135,19 @@ public class TheServer extends SimpleApplication {
                     }
                 }
             }
+        } else if (ask.isEnabled()) {
+            this.countdownRemaining -= tpf;
+            if (this.countdownRemaining <= 0) {
+                System.out.println("GAME START!");
+                game.setEnabled(true);
+                ask.setEnabled(false);
+                try {
+                    outgoing.put(new Util.GameStartMessage(1));
+                } catch(InterruptedException ex) {
+                    Logger.getLogger(TheServer.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            
         }
     }
 
@@ -219,19 +235,21 @@ public class TheServer extends SimpleApplication {
             System.out.println("Client #"+c.getId() + " has disconnected from the server");
             
             //This removes the player from the list of used playerIDs
-            TheServer.this.connPlayerMap.remove(c.getId());
-            
-            Future result = TheServer.this.enqueue(new Callable() {
-                @Override
-                public Object call() {
-                    //Need method in game to remove a player from the active players
-                    //THIS SHOULD NOT REMOVE THEIR DISK FROM THE GAME, as we would need to send packets to all clients to remove the disk
-                    //Just let the disk slide around without any further movement controls
-                    //Method should just ensure that the disconnected client wont participate in the NEXT game and that we won't send any more updates
-                    
-                    return true;
-                }
-            });
+            //System.out.println("GET "+TheServer.this.connPlayerMap.get(c.getId()));
+            if (TheServer.this.connPlayerMap.get(c.getId()) != null) {
+                
+                Future result = TheServer.this.enqueue(new Callable() {
+                    @Override
+                    public Object call() {
+                        //Need method in game to remove a player from the active players
+                        //THIS SHOULD NOT REMOVE THEIR DISK FROM THE GAME, as we would need to send packets to all clients to remove the disk
+                        //Just let the disk slide around without any further movement controls
+                        //Method should just ensure that the disconnected client wont participate in the NEXT game and that we won't send any more updates
+
+                        return true;
+                    }
+                });
+            }
         }
         
     }
