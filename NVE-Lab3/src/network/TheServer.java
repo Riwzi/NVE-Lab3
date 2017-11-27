@@ -142,7 +142,7 @@ public class TheServer extends SimpleApplication {
                 game.setEnabled(true);
                 ask.setEnabled(false);
                 try {
-                    outgoing.put(new Util.GameStartMessage(1));
+                    outgoing.put(new Util.GameStartMessage());
                 } catch(InterruptedException ex) {
                     Logger.getLogger(TheServer.class.getName()).log(Level.SEVERE, null, ex);
                 }
