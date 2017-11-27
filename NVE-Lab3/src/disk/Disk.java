@@ -57,7 +57,7 @@ public abstract class Disk extends Node implements Comparable<Disk>{
     
     // Handle collision with the frame. If a collision is detected, calculate the time passed since collision and move the disk back
     // Then once the new velocity has been calculated, move the disk the remainder of the distance
-    public void frameCollision(float minX, float maxX, float minY, float maxY, float tpf) {
+    public boolean frameCollision(float minX, float maxX, float minY, float maxY, float tpf) {
         if (position.getX()-radius <= minX) {
             // We hit the west wall
             float distance = minX - (position.getX()-radius);
@@ -66,6 +66,7 @@ public abstract class Disk extends Node implements Comparable<Disk>{
             move(velocity.mult(time_since_collision).negate());
             velocity = velocity.multLocal(new Vector2f(-1,1));
             move(velocity.mult(time_since_collision));
+            return true;
         }
         if (position.getX()+radius >= maxX) {
             // We hit the east wall
@@ -75,6 +76,7 @@ public abstract class Disk extends Node implements Comparable<Disk>{
             move(velocity.mult(time_since_collision).negate());
             velocity = velocity.multLocal(new Vector2f(-1,1));
             move(velocity.mult(time_since_collision));
+            return true;
         }
         if (position.getY()-radius <= minY) {
             // We hit the south wall
@@ -84,6 +86,7 @@ public abstract class Disk extends Node implements Comparable<Disk>{
             move(velocity.mult(time_since_collision).negate());
             velocity = velocity.multLocal(new Vector2f(1,-1));
             move(velocity.mult(time_since_collision));
+            return true;
         }
         if (position.getY()+radius >= maxY) {
             // We hit the north wall
@@ -93,10 +96,13 @@ public abstract class Disk extends Node implements Comparable<Disk>{
             move(velocity.mult(time_since_collision).negate());
             velocity = velocity.multLocal(new Vector2f(1,-1));
             move(velocity.mult(time_since_collision));
+            return true;
+        } else {
+            return false;
         }
     }
     
-    public void diskCollision(Disk otherDisk, float tpf) {
+    public boolean diskCollision(Disk otherDisk, float tpf) {
         Vector2f v_1 = this.velocity;
         Vector2f p_1 = this.position;
         float r_1 = this.radius;
@@ -154,6 +160,9 @@ public abstract class Disk extends Node implements Comparable<Disk>{
             
             this.addToScore(otherDisk.reward(this));
             otherDisk.addToScore(this.reward(otherDisk));
+            return true;
+        } else {
+            return false;
         }
     }
     
@@ -252,7 +261,7 @@ public abstract class Disk extends Node implements Comparable<Disk>{
         return this.mass;
     }
     
-    public String getId() {
+    public int getId() {
         return this.id;
     }
     
