@@ -183,7 +183,7 @@ public class TheClient extends SimpleApplication implements ClientStateListener{
 
     @Override
     public void clientDisconnected(Client c, DisconnectInfo info) {
-        
+        TheClient.this.stop();
     }
 
 
