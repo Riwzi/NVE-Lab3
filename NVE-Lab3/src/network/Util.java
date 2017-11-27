@@ -250,10 +250,26 @@ public class Util {
         }
     }
     
-    // Need a message for clients to move
-    // It should contain the diskID and a constant describing which direction it was, ex: 1 for 'up', 2 for 'down', etc.
-    // We cant use the VelocityChangeMessage for this since it straight up sets the velocity, can cause problems if say a collision occurs while the message is being sent
-    // Let server handle velocity changes (?)
+    // The MoveMessage informs us that the sender wishes to move his/her disk in a given direction
+    // Direction usage: 0 for 'up', 
+    //                  1 for 'down', 
+    //                  2 for 'left', 
+    //                  3 for 'right', 
+    @Serializable
+    public static class MoveMessage extends MyAbstractMessage {
+        private int direction;
+        
+        public MoveMessage() {
+        }
+        
+        public MoveMessage(int direction) {
+            this.direction = direction;
+        }
+        
+        public int getDirection() {
+            return direction;
+        }
+    }
     
     @Serializable
     public static class PositionChangeMessage extends MyAbstractMessage {
