@@ -368,6 +368,14 @@ public class Game extends BaseAppState {
         }
     }
     
+    public ArrayList<Disk> getDisks() {
+        return diskStore;
+    }
+    
+    public float getFreeAreaWidth() {
+        return FREE_AREA_WIDTH;
+    }
+    
     private AnalogListener analogListener = new AnalogListener() {
         public void onAnalog(String name, float value, float tpf) {
             String sub = name.substring(0, 2);
