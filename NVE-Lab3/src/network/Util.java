@@ -19,19 +19,17 @@ public class Util {
     
     public static void initialiseSerializables() {
         Serializer.registerClasses(
-                GameSetupMessage.class,
-                GameStartMessage.class,
-                GameOverMessage.class,
-                VelocityChangeMessage.class,
-                PositionChangeMessage.class,
-                PositionAndVelocityChangeMessage.class,
-                ScoreChange.class,
-                PositionsUpdateMessage.class,
-                ScoreUpdateMessage.class,
-                MoveMessage.class,
-                TimeUpdateMessage.class);
-                
-        
+            GameSetupMessage.class,
+            GameStartMessage.class,
+            GameOverMessage.class,
+            VelocityChangeMessage.class,
+            PositionChangeMessage.class,
+            PositionAndVelocityChangeMessage.class,
+            ScoreChange.class,
+            PositionsUpdateMessage.class,
+            ScoreUpdateMessage.class,
+            MoveMessage.class,
+            TimeUpdateMessage.class);
     }
     
     abstract public static class MyAbstractMessage extends AbstractMessage {

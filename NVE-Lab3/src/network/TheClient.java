@@ -82,18 +82,17 @@ public class TheClient extends SimpleApplication implements ClientStateListener{
             // calling messageReceived in ClientNetworkMessageListener
             clientListener = new ClientNetworkMessageListener(serverConnection, this, game.getUpdateInfo());
             serverConnection.addMessageListener(clientListener,
-                    PlayerLight.class,
-                    GameSetupMessage.class,
-                    GameStartMessage.class,
-                    GameOverMessage.class,
-                    VelocityChangeMessage.class,
-                    PositionChangeMessage.class,
-                    PositionAndVelocityChangeMessage.class,
-                    ScoreChange.class,
-                    PositionsUpdateMessage.class,
-                    ScoreUpdateMessage.class,
-                    MoveMessage.class,
-                    TimeUpdateMessage.class);
+                GameSetupMessage.class,
+                GameStartMessage.class,
+                GameOverMessage.class,
+                VelocityChangeMessage.class,
+                PositionChangeMessage.class,
+                PositionAndVelocityChangeMessage.class,
+                ScoreChange.class,
+                PositionsUpdateMessage.class,
+                ScoreUpdateMessage.class,
+                MoveMessage.class,
+                TimeUpdateMessage.class);
             
             // finally start the communication channel to the server
             serverConnection.addClientStateListener(this);
@@ -183,7 +182,8 @@ public class TheClient extends SimpleApplication implements ClientStateListener{
 
     @Override
     public void clientDisconnected(Client c, DisconnectInfo info) {
-        
+        System.out.println(info);
+        System.exit(0);
     }
 
 
