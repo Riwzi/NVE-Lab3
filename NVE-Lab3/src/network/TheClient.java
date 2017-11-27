@@ -96,6 +96,7 @@ public class TheClient extends SimpleApplication implements ClientStateListener{
                     ScoreChange.class,
                     PositionsUpdateMessage.class,
                     ScoreUpdateMessage.class,
+                    MoveMessage.class,
                     TimeUpdateMessage.class);
             
             // finally start the communication channel to the server

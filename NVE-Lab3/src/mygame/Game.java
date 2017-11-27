@@ -36,6 +36,10 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import network.InformationReceived;
+import static network.Util.DOWN;
+import static network.Util.LEFT;
+import static network.Util.RIGHT;
+import static network.Util.UP;
 
 /**
  *
@@ -398,16 +402,16 @@ public class Game extends BaseAppState {
             String sub = name.substring(0, 2);
             try {
                 if (sub.equals("U:")) {
-                   requestToSend.put(0);    
+                   requestToSend.put(UP);    
                 }
                 if (sub.equals("D:")) {
-                   requestToSend.put(1);
+                   requestToSend.put(DOWN);
                 }
                 if (sub.equals("L:")) {
-                   requestToSend.put(2);
+                   requestToSend.put(LEFT);
                 }
                 if (sub.equals("R:")) {
-                   requestToSend.put(3);
+                   requestToSend.put(RIGHT);
                 }
                } catch (InterruptedException ex) {
                         Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
