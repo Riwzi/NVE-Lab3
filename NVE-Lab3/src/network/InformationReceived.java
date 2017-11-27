@@ -50,8 +50,11 @@ public class InformationReceived {
     }
     
     public void setPosition(int seqNb, Vector2f position){
-        this.position = position;
-        seq1 = seqNb;
+        if(seqNb > seq1){
+            this.position = position;
+            seq1 = seqNb;
+        }
+ 
     }
     
     
@@ -68,8 +71,10 @@ public class InformationReceived {
     }
     
     public void setVelocity(int seqNb, Vector2f velocity){
-        this.velocity = velocity;
-        seq2 = seqNb;
+        if(seqNb > seq2){
+            this.velocity = velocity;
+            seq2 = seqNb;
+        }
     }
     
     
@@ -86,8 +91,10 @@ public class InformationReceived {
     }
     
     public void setScore(int seqNb, int score){
-        this.score = score;
-        seq3 = seqNb;
+        if(seqNb > seq3){
+            this.score = score;
+            seq3 = seqNb;
+        }
     }
     
     
@@ -104,8 +111,10 @@ public class InformationReceived {
     }
     
     public void setTime(int seqNb, float time){
-        this.time = time;
-        seq1 = seqNb;
+        if(seqNb > seq1){
+            this.time = time;
+            seq1 = seqNb;
+        }
     }
     
 }

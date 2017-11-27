@@ -25,7 +25,6 @@ import java.util.concurrent.LinkedBlockingQueue;
 import mygame.Ask;
 import mygame.Game;
 import network.Util.*;
-import network.Util.OpenConnectionMessage;
 
 /**
  *
@@ -84,9 +83,6 @@ public class TheClient extends SimpleApplication implements ClientStateListener{
             clientListener = new ClientNetworkMessageListener(serverConnection, this, game.getUpdateInfo());
             serverConnection.addMessageListener(clientListener,
                     PlayerLight.class,
-                    NameTakenMessage.class,
-                    GameActiveMessage.class,
-                    DisconnectMessage.class,
                     GameSetupMessage.class,
                     GameStartMessage.class,
                     GameOverMessage.class,
@@ -172,11 +168,18 @@ public class TheClient extends SimpleApplication implements ClientStateListener{
         inputManager.addMapping("Exit", new KeyTrigger(KeyInput.KEY_E));
         inputManager.addListener(actionListener, "Restart", "Exit");
     }
+    
+    public void gameOver(){
+        this.running = false;
+        this.time = 0;
+    }
+    
     @Override
     public void clientConnected(Client c) {
         System.out.println("Client connected succesfully !");
         createGame();
     }
+    
 
     @Override
     public void clientDisconnected(Client c, DisconnectInfo info) {

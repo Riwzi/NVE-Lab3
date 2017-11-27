@@ -9,6 +9,7 @@ import com.jme3.app.SimpleApplication;
 import com.jme3.input.KeyInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
+import com.jme3.math.Vector2f;
 import com.jme3.network.Client;
 import com.jme3.network.Message;
 import com.jme3.network.MessageListener;
@@ -21,8 +22,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Future;
 import mygame.Ask;
 import mygame.Game;
+import static mygame.Game.TIMEINDEX;
 import network.Util.*;
-import network.Util.OpenConnectionMessage;
 
 /**
  *
@@ -72,6 +73,54 @@ public class ClientNetworkMessageListener
                 public Object call() throws Exception {
                     //Todo change
                     theClient.putConfig(1, players);
+                    return true;
+                }
+            });
+        }else if(m instanceof VelocityChangeMessage){
+            VelocityChangeMessage msg = (VelocityChangeMessage) m;
+            InformationReceived info = updateInfos.get(msg.getDiskID());
+            info.setVelocity(msg.getMessageID(), msg.getNewVelocity());
+        }
+        else if(m instanceof PositionChangeMessage){
+            PositionChangeMessage msg = (PositionChangeMessage) m;
+            InformationReceived info = updateInfos.get(msg.getDiskID());
+            info.setPosition(msg.getMessageID(), msg.getNewPosition());
+        }
+        else if(m instanceof PositionAndVelocityChangeMessage){
+            PositionAndVelocityChangeMessage msg = (PositionAndVelocityChangeMessage) m;
+            InformationReceived info = updateInfos.get(msg.getDiskID());
+            info.setPosition(msg.getMessageID(), msg.getNewPosition());
+            info.setVelocity(msg.getMessageID(), msg.getNewVelocity());
+        }
+        else if(m instanceof ScoreChange){
+            ScoreChange msg = (ScoreChange) m;
+            InformationReceived info = updateInfos.get(msg.getPlayerID());
+            info.setScore(msg.getMessageID(), msg.getNewScore());
+        }
+        else if(m instanceof ScoreChange){
+            ScoreChange msg = (ScoreChange) m;
+            InformationReceived info = updateInfos.get(msg.getPlayerID());
+            info.setScore(msg.getMessageID(), msg.getNewScore());
+        }
+        else if(m instanceof ScoreUpdateMessage){
+            ScoreUpdateMessage msg = (ScoreUpdateMessage) m;
+            for (PlayerLight player : msg.getPlayers()){
+                InformationReceived info = updateInfos.get(player.getID());
+                info.setScore(msg.getMessageID(), player.getScore());
+            }
+            
+        }
+        else if(m instanceof TimeUpdateMessage){
+            TimeUpdateMessage msg = (TimeUpdateMessage) m;
+            InformationReceived info = updateInfos.get(TIMEINDEX);
+            info.setTime(msg.getMessageID(), msg.getTime());
+            
+        }
+        else if(m instanceof GameOverMessage){         
+            Future result = theClient.enqueue(new Callable() {
+                @Override
+                public Object call() throws Exception {
+                    theClient.gameOver();
                     return true;
                 }
             });

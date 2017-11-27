@@ -19,11 +19,6 @@ public class Util {
     
     public static void initialiseSerializables() {
         Serializer.registerClasses(
-                OpenConnectionMessage.class,
-                WelcomeClientMessage.class,
-                NameTakenMessage.class,
-                GameActiveMessage.class,
-                DisconnectMessage.class,
                 GameSetupMessage.class,
                 GameStartMessage.class,
                 GameOverMessage.class,
@@ -96,90 +91,6 @@ public class Util {
         
         public int getScore() {
             return score;
-        }
-    }
-    
-    @Serializable
-    public static class OpenConnectionMessage extends MyAbstractMessage {
-        private String playerName;
-        
-        public OpenConnectionMessage() {
-        }
-
-        public OpenConnectionMessage(int senderID, String playerName) {
-            this.senderID = senderID;
-            this.playerName = playerName;
-        }
-        
-        public String getPlayerName() {
-            return playerName;
-        }
-
-    }
-    
-    @Serializable
-    public static class WelcomeClientMessage extends MyAbstractMessage {
-        private String playerName;
-        
-        public WelcomeClientMessage() {
-        }
-        
-        public WelcomeClientMessage(int senderID, String playerName) {
-            this.senderID = senderID;
-            this.playerName = playerName;
-        }
-        
-        public String getMessage() {
-            return playerName + " has connected to the game.";
-        }
-    }
-    
-    @Serializable
-    public static class NameTakenMessage extends MyAbstractMessage {
-        private String playerName;
-        
-        public NameTakenMessage() {
-        }
-        
-        public NameTakenMessage(int senderID, String playerName) {
-            this.senderID = senderID;
-            this.playerName = playerName;
-        }
-        
-        public String getMessage() {
-            return "Name " + playerName + " is already taken.";
-        }
-    }
-    
-    @Serializable
-    public static class GameActiveMessage extends MyAbstractMessage {
-        
-        public GameActiveMessage() {
-        }
-        
-        public GameActiveMessage(int senderID) {
-            this.senderID = senderID;
-        }
-        
-        public String getMessage() {
-            return "Can't connect, game is currently ongoing.";
-        }
-    }
-    
-    @Serializable
-    public static class DisconnectMessage extends MyAbstractMessage {
-        private String playerName;
-        
-        public DisconnectMessage() {
-        }
-        
-        public DisconnectMessage(int senderID, String playerName) {
-            this.senderID = senderID;
-            this.playerName = playerName;
-        }
-        
-        public String getMessage() {
-            return playerName + "has left the game.";
         }
     }
     
