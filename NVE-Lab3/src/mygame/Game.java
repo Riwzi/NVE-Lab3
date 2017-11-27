@@ -128,7 +128,7 @@ public class Game extends BaseAppState {
     private ArrayList<Disk> diskStore;
     
     //A hash table mapping player id's to Player instances. Used to allow any number of players
-    private HashMap<String, Player> playerMap;
+    private HashMap<Integer, Player> playerMap;
     private Map<Integer, String> playerName;
     private int userID;
     private LinkedBlockingQueue<Integer> requestToSend; 
@@ -316,7 +316,7 @@ public class Game extends BaseAppState {
     public void addLocalPlayer(int player_id, Vector2f position) {
         this.userID = player_id;
         String name = playerName.get(player_id+1);
-        String disk_id = getNextID();
+        int disk_id = getNextID();
         Player player = new Player(sapp.getAssetManager(), PLAYER_R, disk_id, name);
         updateInfos.put(player.getId(), new InformationReceived());
 
@@ -351,7 +351,7 @@ public class Game extends BaseAppState {
     public void addPlayer(int player_id, Vector2f position) {
         updateInfos.put(player_id, new InformationReceived());  
         String name = playerName.get(player_id+1);
-        String disk_id = getNextID();
+        int disk_id = getNextID();
         Player player = new Player(sapp.getAssetManager(), PLAYER_R, disk_id, name);
         updateInfos.put(player.getId(), new InformationReceived());
 
@@ -367,8 +367,8 @@ public class Game extends BaseAppState {
         player.move(position);
     }
     
-    private String getNextID() {
-        return Integer.toString(this.nextID++);
+    private int getNextID() {
+        return this.nextID++;
     }
     
     // Returns the time left until the game is over
@@ -424,7 +424,7 @@ public class Game extends BaseAppState {
 
 
             for (Disk d: diskStore) {
-                info = updateInfos(d.getId());
+                info = updateInfos.get(d.getId());
                 //Move the disk
                 d.move(d.getVelocity().mult(tpf));
 

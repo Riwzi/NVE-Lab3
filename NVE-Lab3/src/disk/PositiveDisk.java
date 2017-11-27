@@ -12,7 +12,7 @@ import com.jme3.scene.Spatial;
 public class PositiveDisk extends Disk {
     private int value;
     
-    public PositiveDisk(AssetManager assetManager, float radius, String id, int initialValue) {
+    public PositiveDisk(AssetManager assetManager, float radius, int id, int initialValue) {
         super(assetManager, radius, id);
         this.value = initialValue;
     }

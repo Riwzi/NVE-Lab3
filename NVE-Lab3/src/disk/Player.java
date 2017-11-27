@@ -11,7 +11,7 @@ import com.jme3.asset.AssetManager;
 public class Player extends Disk{
     private String name;
     
-    public Player(AssetManager assetManager, float radius, String id, String name) {
+    public Player(AssetManager assetManager, float radius, int id, String name) {
         super(assetManager, radius, id);
         this.name = name;
     }

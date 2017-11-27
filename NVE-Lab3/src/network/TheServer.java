@@ -108,23 +108,22 @@ public class TheServer extends SimpleApplication {
                     if (disk.frameCollision(-boundary, boundary, -boundary, boundary, tpf)) {
                         //If there was a collision with the frame, queue a update package
                         try {
-                            outgoing.put(new Util.VelocityChangeMessage(1, Integer.parseInt(disk.getId()), disk.getVelocity()));
-                            outgoing.put(new Util.PositionChangeMessage(1, Integer.parseInt(disk.getId()), disk.getPosition()));
+                            outgoing.put(new Util.VelocityChangeMessage(1, disk.getId(), disk.getVelocity()));
+                            outgoing.put(new Util.PositionChangeMessage(1, disk.getId(), disk.getPosition()));
                         } catch(InterruptedException ex) {
                             Logger.getLogger(TheServer.class.getName()).log(Level.SEVERE, null, ex);
                         }
                     }
-
                     //Collision detection with other disks
                     for (Disk otherDisk: diskStore) {
-                        if (!disk.getId().equals(otherDisk.getId())) {
+                        if (!(disk.getId() == (otherDisk.getId()))) {
                             if (disk.diskCollision(otherDisk, tpf)) {
                                 //If there was a collision between the 2 disks, queue update packages
                                 try {
-                                    outgoing.put(new Util.VelocityChangeMessage(1, Integer.parseInt(disk.getId()), disk.getVelocity()));
-                                    outgoing.put(new Util.PositionChangeMessage(1, Integer.parseInt(disk.getId()), disk.getPosition()));
-                                    outgoing.put(new Util.VelocityChangeMessage(1, Integer.parseInt(otherDisk.getId()), otherDisk.getVelocity()));
-                                    outgoing.put(new Util.PositionChangeMessage(1, Integer.parseInt(otherDisk.getId()), otherDisk.getPosition()));
+                                    outgoing.put(new Util.VelocityChangeMessage(1, disk.getId(), disk.getVelocity()));
+                                    outgoing.put(new Util.PositionChangeMessage(1, disk.getId(), disk.getPosition()));
+                                    outgoing.put(new Util.VelocityChangeMessage(1, otherDisk.getId(), otherDisk.getVelocity()));
+                                    outgoing.put(new Util.PositionChangeMessage(1, otherDisk.getId(), otherDisk.getPosition()));
                                 } catch(InterruptedException ex) {
                                     Logger.getLogger(TheServer.class.getName()).log(Level.SEVERE, null, ex);
                                 }

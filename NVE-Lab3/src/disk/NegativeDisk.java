@@ -11,7 +11,7 @@ import com.jme3.asset.AssetManager;
 public class NegativeDisk extends Disk {
     private int value;
     
-    public NegativeDisk(AssetManager assetManager, float radius, String id, int initialValue) {
+    public NegativeDisk(AssetManager assetManager, float radius, int id, int initialValue) {
         super(assetManager, radius, id);
         this.value = initialValue;
     }

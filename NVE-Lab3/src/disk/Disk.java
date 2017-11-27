@@ -23,11 +23,11 @@ public abstract class Disk extends Node implements Comparable<Disk>{
     protected Vector2f position;
     protected float radius;
     protected float mass;
-    protected String id;
+    protected int id;
     protected int score;
     protected int lastUpdate;
     
-    public Disk(AssetManager assetManager, float radius, String id) {
+    public Disk(AssetManager assetManager, float radius, int id) {
         this.assetManager = assetManager;
         this.velocity = new Vector2f();
         this.position = new Vector2f();
