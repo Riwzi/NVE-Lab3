@@ -327,7 +327,7 @@ public class Game extends BaseAppState {
         player.move(new Vector3f(0f, 0f, -FRAME_THICKNESS));
         
         diskStore.add(player);
-        playerMap.put(disk_id, player);
+        playerMap.put(player_id, player);
         
         player.move(position);
         
@@ -362,13 +362,17 @@ public class Game extends BaseAppState {
         player.move(new Vector3f(0f, 0f, -FRAME_THICKNESS));
         
         diskStore.add(player);
-        playerMap.put(disk_id, player);
+        playerMap.put(player_id, player);
         
         player.move(position);
     }
     
     private int getNextID() {
         return this.nextID++;
+    }
+    
+    public Player getPlayer(int id) {
+        return this.playerMap.get(id);
     }
     
     // Returns the time left until the game is over
