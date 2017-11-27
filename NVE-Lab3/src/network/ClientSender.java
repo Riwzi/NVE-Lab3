@@ -9,6 +9,7 @@ import com.jme3.network.Client;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import network.Util.MoveMessage;
 
 /**
  *
@@ -26,8 +27,8 @@ public class ClientSender implements Runnable{
     
     
     private void sendMessage(int keyboardInput){
-        //Message msg;
-        //serverConnection.send(message);
+        MoveMessage msg = new MoveMessage(keyboardInput);
+        serverConnection.send(msg);
         
     }
 

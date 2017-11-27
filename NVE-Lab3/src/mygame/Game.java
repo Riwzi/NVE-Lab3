@@ -36,6 +36,10 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import network.InformationReceived;
+import static network.Util.DOWN;
+import static network.Util.LEFT;
+import static network.Util.RIGHT;
+import static network.Util.UP;
 
 /**
  *
@@ -47,7 +51,7 @@ public class Game extends BaseAppState {
     private boolean needCleaning = false;
     private boolean running;
     private BitmapText hudText_bis;
-    ConcurrentHashMap< Integer, InformationReceived > updateInfos;
+    private ConcurrentHashMap< Integer, InformationReceived > updateInfos;
     
     private Frame Frame;
     
@@ -114,6 +118,8 @@ public class Game extends BaseAppState {
     };
     
     
+    public static final int TIMEINDEX = -1;
+    
     private final float acceleration = 70f;
     private final float friction = 4f;
     
@@ -138,6 +144,7 @@ public class Game extends BaseAppState {
     protected void initialize(Application app) {
         System.out.println("Game: initialize");
         sapp = (SimpleApplication) app;
+        updateInfos = new ConcurrentHashMap<>();
     }
    
     @Override
@@ -170,6 +177,7 @@ public class Game extends BaseAppState {
         initPlayers();
         //Set up disks
         initDisks();
+        updateInfos.put(TIMEINDEX, new InformationReceived());
         
         addWatingToStart();
     }
@@ -398,16 +406,16 @@ public class Game extends BaseAppState {
             String sub = name.substring(0, 2);
             try {
                 if (sub.equals("U:")) {
-                   requestToSend.put(0);    
+                   requestToSend.put(UP);    
                 }
                 if (sub.equals("D:")) {
-                   requestToSend.put(1);
+                   requestToSend.put(DOWN);
                 }
                 if (sub.equals("L:")) {
-                   requestToSend.put(2);
+                   requestToSend.put(LEFT);
                 }
                 if (sub.equals("R:")) {
-                   requestToSend.put(3);
+                   requestToSend.put(RIGHT);
                 }
                } catch (InterruptedException ex) {
                         Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
@@ -429,6 +437,18 @@ public class Game extends BaseAppState {
 
             for (Disk d: diskStore) {
                 info = updateInfos.get(d.getId());
+                if(info.updatePosition()){
+                    d.setLocalTranslation(info.getPosition().getX(), info.getPosition().getY(), 0);
+                }
+                
+                if(info.updateVelocity()){
+                    d.setLocalTranslation(info.getVelocity().getX(), info.getVelocity().getY(), 0);
+                }
+                
+                if(info.updateScore()){
+                    d.setScore(info.getScore());
+                }
+                
                 //Move the disk
                 d.move(d.getVelocity().mult(tpf));
 
@@ -470,6 +490,11 @@ public class Game extends BaseAppState {
                     text += ((Player) d).getName() + ": " + d.getScore() + "\n";
                 }*/
             }
+            info = updateInfos.get(TIMEINDEX);
+            if(info.updateTime()){
+                Game.time = info.getTime();
+            }
+            
             hudText.setText(text);
         }
         
@@ -645,5 +670,9 @@ public class Game extends BaseAppState {
     
     public void setUpdateInfos(ConcurrentHashMap< Integer, InformationReceived> updateInfos){
         this.updateInfos = updateInfos;
+    }
+    
+    public ConcurrentHashMap< Integer, InformationReceived > getUpdateInfo(){
+        return  this.updateInfos;
     }
 }

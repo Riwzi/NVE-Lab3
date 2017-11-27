@@ -25,7 +25,6 @@ import java.util.concurrent.LinkedBlockingQueue;
 import mygame.Ask;
 import mygame.Game;
 import network.Util.*;
-import network.Util.OpenConnectionMessage;
 
 /**
  *
@@ -73,10 +72,7 @@ public class TheClient extends SimpleApplication implements ClientStateListener{
             LinkedBlockingQueue<Integer> requestToSend = new LinkedBlockingQueue<>(); 
             this.clientSender = new ClientSender(serverConnection, requestToSend);
             game.setRequestToSend(requestToSend);
-            
-            ConcurrentHashMap< Integer, InformationReceived > updateInfos = new ConcurrentHashMap<>();
-            game.setUpdateInfos(updateInfos);
-            
+                        
             
            
             serverConnection = Network.connectToServer(hostname, port);            
@@ -84,12 +80,9 @@ public class TheClient extends SimpleApplication implements ClientStateListener{
       
             // this make the client react on messages when they arrive by
             // calling messageReceived in ClientNetworkMessageListener
-            clientListener = new ClientNetworkMessageListener(serverConnection, this, updateInfos);
+            clientListener = new ClientNetworkMessageListener(serverConnection, this, game.getUpdateInfo());
             serverConnection.addMessageListener(clientListener,
                     PlayerLight.class,
-                    NameTakenMessage.class,
-                    GameActiveMessage.class,
-                    DisconnectMessage.class,
                     GameSetupMessage.class,
                     GameStartMessage.class,
                     GameOverMessage.class,
@@ -99,6 +92,7 @@ public class TheClient extends SimpleApplication implements ClientStateListener{
                     ScoreChange.class,
                     PositionsUpdateMessage.class,
                     ScoreUpdateMessage.class,
+                    MoveMessage.class,
                     TimeUpdateMessage.class);
             
             // finally start the communication channel to the server
@@ -174,11 +168,18 @@ public class TheClient extends SimpleApplication implements ClientStateListener{
         inputManager.addMapping("Exit", new KeyTrigger(KeyInput.KEY_E));
         inputManager.addListener(actionListener, "Restart", "Exit");
     }
+    
+    public void gameOver(){
+        this.running = false;
+        this.time = 0;
+    }
+    
     @Override
     public void clientConnected(Client c) {
         System.out.println("Client connected succesfully !");
         createGame();
     }
+    
 
     @Override
     public void clientDisconnected(Client c, DisconnectInfo info) {
