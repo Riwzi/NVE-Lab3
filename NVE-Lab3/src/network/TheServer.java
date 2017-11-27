@@ -6,6 +6,7 @@
 package network;
 
 import com.jme3.app.SimpleApplication;
+import com.jme3.math.Vector2f;
 import com.jme3.network.Filters;
 import com.jme3.network.HostedConnection;
 import com.jme3.network.Message;
@@ -15,11 +16,16 @@ import com.jme3.network.Network;
 import com.jme3.network.Server;
 import com.jme3.renderer.RenderManager;
 import com.jme3.system.JmeContext;
+import disk.Disk;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import mygame.Ask;
 import mygame.Game;
 /**
@@ -35,7 +41,7 @@ public class TheServer extends SimpleApplication {
     private final int port;
     
     private ConcurrentLinkedQueue<Util.MyAbstractMessage> incoming;
-    private ConcurrentLinkedQueue<Util.MyAbstractMessage> outgoing;
+    private BlockingQueue<Util.MyAbstractMessage> outgoing;
     private BiMap<Integer,Integer> connPlayerMap; //Maps the connectionId to a playerId (need to have this as a map if lots of clients connect and disconnect, as we only have 9 playerids).
     
     private Ask ask = new Ask();
@@ -81,9 +87,11 @@ public class TheServer extends SimpleApplication {
         server.addMessageListener(new ServerListener(), 
                 Util.GameOverMessage.class); //TODO: fix messages
         System.out.println("ServerListener activated and added to server");
-        
+        // add a listener that reacts on connections
         server.addConnectionListener(new MyConnectionListener());
         System.out.println("ConnectionListener activated and added to server");
+        // add a packet sender that takes messages from the blockingqueue
+        new Thread(new MessageSender()).start();
     }
 
     @Override
@@ -92,6 +100,38 @@ public class TheServer extends SimpleApplication {
             if (Game.getRemainingTime() <= 0) {
                 game.setEnabled(false);
                 ask.setEnabled(true);
+            } else {
+                ArrayList<Disk> diskStore = game.getDisks();
+                for (Disk disk: diskStore) {
+                    //Collision detection with frame
+                    float boundary = game.getFreeAreaWidth()/2;
+                    if (disk.frameCollision(-boundary, boundary, -boundary, boundary, tpf)) {
+                        //If there was a collision with the frame, queue a update package
+                        try {
+                            outgoing.put(new Util.VelocityChangeMessage(1, Integer.parseInt(disk.getId()), disk.getVelocity()));
+                            outgoing.put(new Util.PositionChangeMessage(1, Integer.parseInt(disk.getId()), disk.getPosition()));
+                        } catch(InterruptedException ex) {
+                            Logger.getLogger(TheServer.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+
+                    //Collision detection with other disks
+                    for (Disk otherDisk: diskStore) {
+                        if (!disk.getId().equals(otherDisk.getId())) {
+                            if (disk.diskCollision(otherDisk, tpf)) {
+                                //If there was a collision between the 2 disks, queue update packages
+                                try {
+                                    outgoing.put(new Util.VelocityChangeMessage(1, Integer.parseInt(disk.getId()), disk.getVelocity()));
+                                    outgoing.put(new Util.PositionChangeMessage(1, Integer.parseInt(disk.getId()), disk.getPosition()));
+                                    outgoing.put(new Util.VelocityChangeMessage(1, Integer.parseInt(otherDisk.getId()), otherDisk.getVelocity()));
+                                    outgoing.put(new Util.PositionChangeMessage(1, Integer.parseInt(otherDisk.getId()), otherDisk.getPosition()));
+                                } catch(InterruptedException ex) {
+                                    Logger.getLogger(TheServer.class.getName()).log(Level.SEVERE, null, ex);
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
     }
@@ -186,12 +226,15 @@ public class TheServer extends SimpleApplication {
     private class MessageSender implements Runnable {
 
         @Override
-        @SuppressWarnings("SleepWhileInLoop")
         public void run() {
             System.out.println("MesssageSender thread running");
-            while (true) {
-                System.out.println("Sending one update to each client");
-                //server.broadcast(new HeartMessage()); // ... send ...
+            try {
+                while (true) {
+                    Util.MyAbstractMessage message = outgoing.take();
+                    server.broadcast(message);
+                }
+            } catch (InterruptedException ex) {
+                Logger.getLogger(MessageSender.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }
