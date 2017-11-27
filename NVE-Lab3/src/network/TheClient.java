@@ -97,7 +97,9 @@ public class TheClient extends SimpleApplication implements ClientStateListener{
             // finally start the communication channel to the server
             serverConnection.addClientStateListener(this);
             serverConnection.start();
-            clientSender.run();
+            System.out.println("la");
+            new Thread(clientSender).start();
+            System.out.println("la2");
             
         }catch (IOException ex) {
             ex.printStackTrace();

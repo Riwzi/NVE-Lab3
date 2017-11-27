@@ -65,14 +65,14 @@ public class ClientNetworkMessageListener
             });
 
         }else if (m instanceof Util.GameSetupMessage){
-            GameSetupMessage msg = (GameSetupMessage) m;
+            final GameSetupMessage msg = (GameSetupMessage) m;
             final ArrayList<PlayerLight> players = msg.getPlayers();
             
             Future result = theClient.enqueue(new Callable() {
                 @Override
                 public Object call() throws Exception {
                     //Todo change
-                    theClient.putConfig(1, players);
+                    theClient.putConfig(msg.getMyId(), players);
                     return true;
                 }
             });

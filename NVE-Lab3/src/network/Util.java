@@ -34,17 +34,12 @@ public class Util {
     
     abstract public static class MyAbstractMessage extends AbstractMessage {
 
-        protected int senderID;
 
         protected int messageID;
         protected static int globalCounter = 1000;
 
         public MyAbstractMessage() {
             this.messageID = globalCounter++; // default messageID
-        }
-
-        public int getSenderID() {
-            return senderID;
         }
 
         public int getMessageID() {
@@ -95,17 +90,21 @@ public class Util {
     @Serializable
     public static class GameSetupMessage extends MyAbstractMessage {
         private ArrayList<PlayerLight> players;
+        private int myId;
         
         public GameSetupMessage() {
         }
         
-        public GameSetupMessage(int senderID, ArrayList<PlayerLight> players) {
-            this.senderID = senderID;
+        public GameSetupMessage(int myId, ArrayList<PlayerLight> players) {
             this.players = players;
         }
         
         public ArrayList<PlayerLight> getPlayers() {
             return players;
+        }
+        
+        public int getMyId(){
+            return myId;
         }
         
     }
@@ -116,9 +115,6 @@ public class Util {
         public GameStartMessage() {
         }
         
-        public GameStartMessage(int senderID) {
-            this.senderID = senderID;
-        }
         
         public String getMessage() {
             return "Game has started.";
@@ -132,8 +128,7 @@ public class Util {
         public GameOverMessage() {
         }
         
-        public GameOverMessage(int senderID, ArrayList<Integer> winners) {
-            this.senderID = senderID;
+        public GameOverMessage(ArrayList<Integer> winners) {
             this.winners = winners;
         }
         
@@ -150,8 +145,7 @@ public class Util {
         public VelocityChangeMessage() {
         }
         
-        public VelocityChangeMessage(int senderID, int diskID, Vector2f newVelocity) {
-            this.senderID = senderID;
+        public VelocityChangeMessage(int diskID, Vector2f newVelocity) {
             this.diskID = diskID;
             this.newVelocity = newVelocity;
         }
@@ -194,8 +188,7 @@ public class Util {
         public PositionChangeMessage() {
         }
         
-        public PositionChangeMessage(int senderID, int diskID, Vector2f newPosition) {
-            this.senderID = senderID;
+        public PositionChangeMessage(int diskID, Vector2f newPosition) {
             this.diskID = diskID;
             this.newPosition = newPosition;
         }
@@ -218,11 +211,10 @@ public class Util {
         public PositionAndVelocityChangeMessage() {
         }
         
-        public PositionAndVelocityChangeMessage(int senderID, 
+        public PositionAndVelocityChangeMessage( 
                 int diskID, 
                 Vector2f newPosition, 
                 Vector2f newVelocity) {
-            this.senderID = senderID;
             this.diskID = diskID;
             this.newPosition = newPosition;
             this.newVelocity = newVelocity;
@@ -249,8 +241,7 @@ public class Util {
         public ScoreChange() {
         }
         
-        public ScoreChange(int senderID, int playerID, int newScore) {
-            this.senderID = senderID;
+        public ScoreChange(int playerID, int newScore) {
             this.playerID = playerID;
             this.newScore = newScore;
         }
@@ -275,8 +266,7 @@ public class Util {
         public PositionsUpdateMessage() {
         }
         
-        public PositionsUpdateMessage(int senderID, ArrayList<PlayerLight> players) {
-            this.senderID = senderID;
+        public PositionsUpdateMessage(ArrayList<PlayerLight> players) {
             this.players = players;
         }
         
@@ -295,8 +285,7 @@ public class Util {
         public ScoreUpdateMessage() {
         }
         
-        public ScoreUpdateMessage(int senderID, ArrayList<PlayerLight> players) {
-            this.senderID = senderID;
+        public ScoreUpdateMessage(ArrayList<PlayerLight> players) {
             this.players = players;
         }
         
@@ -315,8 +304,7 @@ public class Util {
         public TimeUpdateMessage() {
         }
         
-        public TimeUpdateMessage(int senderID, float time) {
-            this.senderID = senderID;
+        public TimeUpdateMessage(float time) {
             this.time = time;
         }
         

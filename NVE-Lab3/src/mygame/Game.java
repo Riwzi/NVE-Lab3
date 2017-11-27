@@ -651,7 +651,7 @@ public class Game extends BaseAppState {
     
     protected void addWatingToStart(){
         BitmapFont myFont = sapp.getAssetManager().loadFont("Interface/Fonts/Console.fnt");
-        BitmapText hudText_bis = new BitmapText(myFont, false);
+        hudText_bis = new BitmapText(myFont, false);
         hudText_bis.setSize(myFont.getCharSet().getRenderedSize() * 3);
         hudText_bis.setColor(ColorRGBA.White);
         hudText_bis.setText("GAME IS GOING TO START");
