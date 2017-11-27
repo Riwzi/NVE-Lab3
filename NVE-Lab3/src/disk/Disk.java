@@ -269,6 +269,10 @@ public abstract class Disk extends Node implements Comparable<Disk>{
         return this.score;
     }
     
+    public void setScore(int score){
+        this.score = score;
+    }
+    
     @Override
     public int compareTo(Disk comparePlayer) {
         return this.score - comparePlayer.getScore();

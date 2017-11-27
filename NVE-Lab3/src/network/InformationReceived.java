@@ -5,6 +5,8 @@
  */
 package network;
 
+import com.jme3.math.Vector2f;
+
 /**
  *
  * @author Quentin
@@ -13,10 +15,12 @@ public class InformationReceived {
     private int lastseq1, seq1;
     private int lastseq2, seq2;
     private int lastseq3, seq3;
+    private float time;
     
-    private float position;
-    private float velocity;
+    private Vector2f position;
+    private Vector2f velocity;
     private int score;
+    private boolean isTime;
     
     public InformationReceived(){
         seq1 = 0;
@@ -26,9 +30,10 @@ public class InformationReceived {
         lastseq2 = 0;
         lastseq3 = 0;
         
-        position = 0;
-        velocity = 0;
+        position = new Vector2f();
+        velocity = new Vector2f();
         score = 0;
+        time = 0;
     }
     
     
@@ -39,12 +44,12 @@ public class InformationReceived {
         return false;
     }
     
-    public float getPosition(){
-        seq1 = lastseq1;
+    public Vector2f getPosition(){
+        lastseq1 = seq1;
         return position;
     }
     
-    public void setPosition(int seqNb, float position){
+    public void setPosition(int seqNb, Vector2f position){
         this.position = position;
         seq1 = seqNb;
     }
@@ -57,14 +62,50 @@ public class InformationReceived {
         return false;
     }
     
-    public float getVelocity(){
-        seq2 = lastseq2;
+    public Vector2f getVelocity(){
+        lastseq2 = seq2;
         return position;
     }
     
-    public void setVelocity(int seqNb, float velocity){
+    public void setVelocity(int seqNb, Vector2f velocity){
         this.velocity = velocity;
         seq2 = seqNb;
+    }
+    
+    
+    public boolean updateScore(){
+        if(seq3 > lastseq3){
+            return true;
+        }
+        return false;
+    }
+    
+    public int getScore(){
+        lastseq3 = seq3;
+        return score;
+    }
+    
+    public void setScore(int seqNb, int score){
+        this.score = score;
+        seq3 = seqNb;
+    }
+    
+    
+    public boolean updateTime(){
+        if(seq1 > lastseq1){
+            return true;
+        }
+        return false;
+    }
+    
+    public float getTime(){
+        lastseq1 = seq1;
+        return time;
+    }
+    
+    public void setTime(int seqNb, float time){
+        this.time = time;
+        seq1 = seqNb;
     }
     
 }

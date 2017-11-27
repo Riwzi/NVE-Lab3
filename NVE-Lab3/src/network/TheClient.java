@@ -73,10 +73,7 @@ public class TheClient extends SimpleApplication implements ClientStateListener{
             LinkedBlockingQueue<Integer> requestToSend = new LinkedBlockingQueue<>(); 
             this.clientSender = new ClientSender(serverConnection, requestToSend);
             game.setRequestToSend(requestToSend);
-            
-            ConcurrentHashMap< Integer, InformationReceived > updateInfos = new ConcurrentHashMap<>();
-            game.setUpdateInfos(updateInfos);
-            
+                        
             
            
             serverConnection = Network.connectToServer(hostname, port);            
@@ -84,7 +81,7 @@ public class TheClient extends SimpleApplication implements ClientStateListener{
       
             // this make the client react on messages when they arrive by
             // calling messageReceived in ClientNetworkMessageListener
-            clientListener = new ClientNetworkMessageListener(serverConnection, this, updateInfos);
+            clientListener = new ClientNetworkMessageListener(serverConnection, this, game.getUpdateInfo());
             serverConnection.addMessageListener(clientListener,
                     PlayerLight.class,
                     NameTakenMessage.class,
