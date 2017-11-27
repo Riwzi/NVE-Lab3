@@ -31,9 +31,11 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import network.InformationReceived;
 
 /**
  *
@@ -45,6 +47,7 @@ public class Game extends BaseAppState {
     private boolean needCleaning = false;
     private boolean running;
     private BitmapText hudText_bis;
+    ConcurrentHashMap< Integer, InformationReceived > updateInfos;
     
     private Frame Frame;
     
@@ -150,6 +153,7 @@ public class Game extends BaseAppState {
             time = 0;
             sapp.getRootNode().detachAllChildren();
             needCleaning = false;
+            updateInfos.clear();
         }
         
         
@@ -250,6 +254,8 @@ public class Game extends BaseAppState {
     // Adds a negative disk to the game at the given position
     private void addNegative(Vector2f position, Vector2f velocity) {
         NegativeDisk negative = new NegativeDisk(sapp.getAssetManager(), NEGDISK_R, getNextID(), INITIAL_NEGATIVE);
+        updateInfos.put(negative.getId(), new InformationReceived());
+
         Geometry negativeGeometry = negative.createGeometry(NEGDISK_R, FRAME_THICKNESS);
         sapp.getRootNode().attachChild(negative);
         negative.attachChild(negativeGeometry);
@@ -264,6 +270,8 @@ public class Game extends BaseAppState {
     // Adds a positive disk to the game at the given position
     private void addPositive(Vector2f position, Vector2f velocity) {
         PositiveDisk positive = new PositiveDisk(sapp.getAssetManager(), POSDISK_R, getNextID(), INITIAL_POSITIVE);
+        updateInfos.put(positive.getId(), new InformationReceived());
+
         Geometry positiveGeometry = positive.createGeometry(POSDISK_R, FRAME_THICKNESS);
         sapp.getRootNode().attachChild(positive);
         positive.attachChild(positiveGeometry);
@@ -310,6 +318,8 @@ public class Game extends BaseAppState {
         String name = playerName.get(player_id+1);
         String disk_id = getNextID();
         Player player = new Player(sapp.getAssetManager(), PLAYER_R, disk_id, name);
+        updateInfos.put(player.getId(), new InformationReceived());
+
         Geometry playerGeometry = player.createGeometry(PLAYER_R, FRAME_THICKNESS, ColorRGBA.Blue);
         sapp.getRootNode().attachChild(player);
         player.attachChild(playerGeometry);
@@ -339,9 +349,12 @@ public class Game extends BaseAppState {
     
     //Adds a non-local player (no keyboard inputs)
     public void addPlayer(int player_id, Vector2f position) {
+        updateInfos.put(player_id, new InformationReceived());  
         String name = playerName.get(player_id+1);
         String disk_id = getNextID();
         Player player = new Player(sapp.getAssetManager(), PLAYER_R, disk_id, name);
+        updateInfos.put(player.getId(), new InformationReceived());
+
         Geometry playerGeometry = player.createGeometry(PLAYER_R, FRAME_THICKNESS, ColorRGBA.Green);
         sapp.getRootNode().attachChild(player);
         player.attachChild(playerGeometry);
@@ -392,6 +405,8 @@ public class Game extends BaseAppState {
 
     @Override
     public void update(float tpf) {
+        InformationReceived info;
+
         if(running){
             
             time += tpf;
@@ -401,6 +416,7 @@ public class Game extends BaseAppState {
 
 
             for (Disk d: diskStore) {
+                info = updateInfos(d.getId());
                 //Move the disk
                 d.move(d.getVelocity().mult(tpf));
 
@@ -614,5 +630,8 @@ public class Game extends BaseAppState {
     public void setRequestToSend(LinkedBlockingQueue<Integer> requestToSend){
         this.requestToSend = requestToSend;
     } 
-
+    
+    public void setUpdateInfos(ConcurrentHashMap< Integer, InformationReceived> updateInfos){
+        this.updateInfos = updateInfos;
+    }
 }
