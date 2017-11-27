@@ -114,7 +114,7 @@ public class TheServer extends SimpleApplication {
                     if (disk.frameCollision(-boundary, boundary, -boundary, boundary, tpf)) {
                         //If there was a collision with the frame, queue a update package
                         try {
-                            outgoing.put(new Util.PositionAndVelocityChangeMessage(1, disk.getId(), disk.getPosition(), disk.getVelocity()));
+                            outgoing.put(new Util.PositionAndVelocityChangeMessage(disk.getId(), disk.getPosition(), disk.getVelocity()));
                         } catch(InterruptedException ex) {
                             Logger.getLogger(TheServer.class.getName()).log(Level.SEVERE, null, ex);
                         }
@@ -125,8 +125,8 @@ public class TheServer extends SimpleApplication {
                             if (disk.diskCollision(otherDisk, tpf)) {
                                 //If there was a collision between the 2 disks, queue update packages
                                 try {
-                                    outgoing.put(new Util.PositionAndVelocityChangeMessage(1, disk.getId(), disk.getPosition(), disk.getVelocity()));
-                                    outgoing.put(new Util.PositionAndVelocityChangeMessage(1, otherDisk.getId(), otherDisk.getPosition(), otherDisk.getVelocity()));
+                                    outgoing.put(new Util.PositionAndVelocityChangeMessage(disk.getId(), disk.getPosition(), disk.getVelocity()));
+                                    outgoing.put(new Util.PositionAndVelocityChangeMessage(otherDisk.getId(), otherDisk.getPosition(), otherDisk.getVelocity()));
                                 } catch(InterruptedException ex) {
                                     Logger.getLogger(TheServer.class.getName()).log(Level.SEVERE, null, ex);
                                 }
