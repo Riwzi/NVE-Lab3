@@ -53,12 +53,12 @@ public class Util {
      */
     public static class PlayerLight{
         private int id;
-        private String name;
+        private int name;
         private Vector2f position;
         private Vector2f velocity;
         private int score;
         
-        public PlayerLight(int id, String name, Vector2f position, Vector2f velocity, int score) {
+        public PlayerLight(int id, int name, Vector2f position, Vector2f velocity, int score) {
             this.id = id;
             this.name = name;
             this.position = position;
@@ -70,7 +70,7 @@ public class Util {
             return id;
         }
         
-        public String getName() {
+        public int getName() {
             return name;
         }
         
