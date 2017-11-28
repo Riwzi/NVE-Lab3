@@ -19,6 +19,10 @@ import com.jme3.system.JmeContext;
 import disk.Disk;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ConcurrentHashMap;
@@ -41,7 +45,7 @@ public class TheServer extends SimpleApplication {
     private final int port;
     
     private ConcurrentLinkedQueue<Util.MyAbstractMessage> incoming;
-    private LinkedBlockingQueue<Util.MyAbstractMessage> outgoing;
+    private LinkedBlockingQueue<Callable> outgoing;
     private BiMap<Integer,Integer> connPlayerMap; //Maps the connectionId to a playerId (need to have this as a map if lots of clients connect and disconnect, as we only have 9 playerids).
     
     private Ask ask = new Ask();
@@ -86,15 +90,56 @@ public class TheServer extends SimpleApplication {
         }
         System.out.println("Server started");
         
-        // add a listener that reacts on incoming network packets
+        // add a listeners
         server.addMessageListener(new ServerListener(), 
                 Util.MoveMessage.class);
-        System.out.println("ServerListener activated and added to server");
-        // add a listener that reacts on connections
         server.addConnectionListener(new MyConnectionListener());
-        System.out.println("ConnectionListener activated and added to server");
+        
         // add a packet sender that takes messages from the blockingqueue
         new Thread(new MessageSender()).start();
+    }
+    
+    public void putConfig(ArrayList<Util.PlayerLight> playersList){
+        for (Util.PlayerLight player : playersList){
+            game.addPlayer(player.getName(), player.getPosition());
+        }
+    }
+    
+    public void gameStart() {
+        System.out.println("GAME START!");
+        game.setEnabled(true);
+        ask.setEnabled(false);
+
+        Enumeration<Integer> values = this.connPlayerMap.values();
+        ArrayList<Util.PlayerLight> players = new ArrayList();
+        
+        List<Vector2f> positions = Arrays.asList(game.getPlayerPositions());
+        Collections.shuffle(positions);
+        //Generate all players
+        while (values.hasMoreElements()) {
+            int value = values.nextElement();
+            players.add(new Util.PlayerLight(game.getNextID(), value, positions.get(value), new Vector2f(), 0));
+        }
+        putConfig(players); //Add all players to the game
+        
+        try {
+            final ArrayList<Util.PlayerLight> playerList = players;
+            // Send different GameSetupMessages to each player (the difference is the playerIDs)
+            for (final Util.PlayerLight player: players) {
+                final HostedConnection conn = TheServer.this.server.getConnection(player.getName());
+                outgoing.put(new Callable() {
+                    @Override
+                    public Object call() throws Exception {
+                        Util.MyAbstractMessage msg = new Util.GameSetupMessage(player.getID(), playerList);
+                        msg.setReliable(true);
+                        TheServer.this.server.broadcast(Filters.equalTo(conn),msg);
+                        return true;
+                    }
+                });
+            }
+        } catch(InterruptedException ex) {
+            Logger.getLogger(TheServer.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     @Override
@@ -113,8 +158,16 @@ public class TheServer extends SimpleApplication {
                     float boundary = game.getFreeAreaWidth()/2;
                     if (disk.frameCollision(-boundary, boundary, -boundary, boundary, tpf)) {
                         //If there was a collision with the frame, queue a update package
+                        final Disk theDisk = disk;
                         try {
-                            outgoing.put(new Util.PositionAndVelocityChangeMessage(disk.getId(), disk.getPosition(), disk.getVelocity()));
+                            outgoing.put(new Callable() {
+                                @Override
+                                public Object call() throws Exception {
+                                    Util.MyAbstractMessage msg = new Util.PositionAndVelocityChangeMessage(theDisk.getId(), theDisk.getPosition(), theDisk.getVelocity());
+                                    TheServer.this.server.broadcast(msg);
+                                    return true;
+                                }
+                            });
                         } catch(InterruptedException ex) {
                             Logger.getLogger(TheServer.class.getName()).log(Level.SEVERE, null, ex);
                         }
@@ -122,11 +175,27 @@ public class TheServer extends SimpleApplication {
                     //Collision detection with other disks
                     for (Disk otherDisk: diskStore) {
                         if (!(disk.getId() == (otherDisk.getId()))) {
+                            final Disk theDisk = disk;
                             if (disk.diskCollision(otherDisk, tpf)) {
                                 //If there was a collision between the 2 disks, queue update packages
+                                final Disk theOtherDisk = otherDisk;
                                 try {
-                                    outgoing.put(new Util.PositionAndVelocityChangeMessage(disk.getId(), disk.getPosition(), disk.getVelocity()));
-                                    outgoing.put(new Util.PositionAndVelocityChangeMessage(otherDisk.getId(), otherDisk.getPosition(), otherDisk.getVelocity()));
+                                    outgoing.put(new Callable() {
+                                        @Override
+                                        public Object call() throws Exception {
+                                            Util.MyAbstractMessage msg = new Util.PositionAndVelocityChangeMessage(theDisk.getId(), theDisk.getPosition(), theDisk.getVelocity());
+                                            TheServer.this.server.broadcast(msg);
+                                            return true;
+                                        }
+                                    });
+                                    outgoing.put(new Callable() {
+                                        @Override
+                                        public Object call() throws Exception {
+                                            Util.MyAbstractMessage msg = new Util.PositionAndVelocityChangeMessage(theOtherDisk.getId(), theOtherDisk.getPosition(), theOtherDisk.getVelocity());
+                                            TheServer.this.server.broadcast(msg);
+                                            return true;
+                                        }
+                                    });
                                 } catch(InterruptedException ex) {
                                     Logger.getLogger(TheServer.class.getName()).log(Level.SEVERE, null, ex);
                                 }
@@ -138,14 +207,7 @@ public class TheServer extends SimpleApplication {
         } else if (ask.isEnabled()) {
             this.countdownRemaining -= tpf;
             if (this.countdownRemaining <= 0) {
-                System.out.println("GAME START!");
-                game.setEnabled(true);
-                ask.setEnabled(false);
-                try {
-                    outgoing.put(new Util.GameStartMessage());
-                } catch(InterruptedException ex) {
-                    Logger.getLogger(TheServer.class.getName()).log(Level.SEVERE, null, ex);
-                }
+                gameStart();
             }
             
         }
@@ -264,10 +326,9 @@ public class TheServer extends SimpleApplication {
             System.out.println("MesssageSender thread running");
             try {
                 while (true) {
-                    Util.MyAbstractMessage message = outgoing.take();
-                    server.broadcast(message);
+                    outgoing.take().call();
                 }
-            } catch (InterruptedException ex) {
+            } catch (Exception ex) {
                 Logger.getLogger(MessageSender.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
@@ -307,6 +368,14 @@ public class TheServer extends SimpleApplication {
             V v = map.remove(k);
             inversedMap.remove(v);
             return v;
+        }
+        
+        public Enumeration<V> values() {
+            return inversedMap.keys();
+        }
+        
+        public Enumeration<K> keys() {
+            return map.keys();
         }
     }
 }
