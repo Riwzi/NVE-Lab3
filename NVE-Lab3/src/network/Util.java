@@ -29,7 +29,8 @@ public class Util {
             PositionsUpdateMessage.class,
             ScoreUpdateMessage.class,
             MoveMessage.class,
-            TimeUpdateMessage.class);
+            TimeUpdateMessage.class,
+            PlayerLight.class);
     }
     
     abstract public static class MyAbstractMessage extends AbstractMessage {
@@ -51,12 +52,21 @@ public class Util {
     /**
      * Used for now to send a collection of data for a player
      */
+    @Serializable
     public static class PlayerLight{
         private int id;
         private int name;
         private Vector2f position;
         private Vector2f velocity;
         private int score;
+        
+        public PlayerLight() {
+            this.id = 0;
+            this.name = 0;
+            this.position = new Vector2f();
+            this.velocity = new Vector2f();
+            this.score = 0;
+        }
         
         public PlayerLight(int id, int name, Vector2f position, Vector2f velocity, int score) {
             this.id = id;
