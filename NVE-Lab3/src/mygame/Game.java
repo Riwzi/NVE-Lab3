@@ -375,7 +375,7 @@ public class Game extends BaseAppState {
         player.move(position);
     }
     
-    private int getNextID() {
+    public int getNextID() {
         return this.nextID++;
     }
     
@@ -399,6 +399,10 @@ public class Game extends BaseAppState {
     
     public float getFreeAreaWidth() {
         return FREE_AREA_WIDTH;
+    }
+    
+    public Vector2f[] getPlayerPositions() {
+        return PLAYER_POSITIONS;
     }
     
     private AnalogListener analogListener = new AnalogListener() {
