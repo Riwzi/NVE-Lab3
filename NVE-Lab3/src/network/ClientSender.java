@@ -26,8 +26,7 @@ public class ClientSender implements Runnable{
     }
     
     
-    private void sendMessage(int keyboardInput){
-        MoveMessage msg = new MoveMessage(keyboardInput);
+    private void sendMessage(MoveMessage msg){
         this.serverConnection.send(msg);
         
     }
@@ -38,7 +37,9 @@ public class ClientSender implements Runnable{
         while(true){
             try {
                 toSend = requestToSend.take();
-                sendMessage(toSend);
+                MoveMessage msg = new MoveMessage();
+                msg.incrementDirection(toSend);
+                sendMessage(msg);
             } catch (InterruptedException ex) {
                 Logger.getLogger(ClientSender.class.getName()).log(Level.SEVERE, null, ex);
             }
