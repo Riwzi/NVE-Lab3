@@ -162,8 +162,33 @@ public class TheServer extends SimpleApplication {
                 game.setEnabled(false);
                 ask.setEnabled(true);
                 this.countdownRemaining = this.countdown;
-                //TODO: send gameOverMessage here
-                
+                final ArrayList<Integer> winners = new ArrayList();
+                int highestScore = 0;
+                for (int i = 0; i < connPlayerMap.size()-1; i++) {
+                    Disk player = game.getPlayer(connPlayerMap.get(i));
+                    if (player.getScore() > highestScore || highestScore == 0) {
+                        highestScore = player.getScore();
+                    }
+                }
+                for (int i = 0; i < connPlayerMap.size()-1; i++) {
+                    Disk player = game.getPlayer(connPlayerMap.get(i));
+                    if (player.getScore() == highestScore) {
+                        winners.add(player.getId());
+                    }
+                }
+                try {
+                    outgoing.put(new Callable() {
+                        @Override
+                        public Object call() throws Exception {
+                            Util.MyAbstractMessage msg = new Util.GameOverMessage(winners);
+                            TheServer.this.server.broadcast(msg);
+                            return true;
+                        }
+                    });
+                } catch(InterruptedException ex) {
+                    Logger.getLogger(TheServer.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
             } else {
                 ArrayList<Disk> diskStore = game.getDisks();
                 for (Disk disk: diskStore) {
