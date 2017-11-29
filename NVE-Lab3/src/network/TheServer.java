@@ -17,6 +17,7 @@ import com.jme3.network.Server;
 import com.jme3.renderer.RenderManager;
 import com.jme3.system.JmeContext;
 import disk.Disk;
+import disk.Player;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -138,6 +139,17 @@ public class TheServer extends SimpleApplication {
                     }
                 });
             }
+            Thread.sleep(5000);
+            outgoing.put(new Callable() {
+                @Override
+                public Object call() throws Exception {
+                    Util.MyAbstractMessage msg = new Util.GameStartMessage();
+                    msg.setReliable(true);
+                    TheServer.this.server.broadcast(msg);
+                    return true;
+                }
+            });
+            
         } catch(InterruptedException ex) {
             Logger.getLogger(TheServer.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -235,7 +247,7 @@ public class TheServer extends SimpleApplication {
                 final int connectionId = source.getId();
                 final int direction = ((Util.MoveMessage) m).getDirection();
                 
-                /* ???
+                /*
                 Future result = TheServer.this.enqueue(new Callable() {
                     @Override
                     public Object call() {
@@ -243,7 +255,11 @@ public class TheServer extends SimpleApplication {
                         Player player = game.getPlayer(connPlayerMap.get(connectionId));
 
                         //Increase the velocity in the given direction
-                        Vector2f velocity = new Vector2f();
+                        Vector2f velocity;
+                        switch (direction) {
+                            case 0: velocity = new Vector2f()
+                                    
+                        }
                         player.addVelocity(velocity);
                         return true;
                     }

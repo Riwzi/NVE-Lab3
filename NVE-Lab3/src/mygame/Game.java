@@ -127,7 +127,7 @@ public class Game extends BaseAppState {
     
     private static final float START_TIME = 30f;
     private static float time = 0;
-    
+    private float currentTpf;
     private BitmapText hudText;
     
     private ArrayList<String> mappings;
@@ -405,6 +405,10 @@ public class Game extends BaseAppState {
         return PLAYER_POSITIONS;
     }
     
+    public float getTpf() {
+        return this.currentTpf;
+    }
+    
     private AnalogListener analogListener = new AnalogListener() {
         public void onAnalog(String name, float value, float tpf) {
             String sub = name.substring(0, 2);
@@ -432,7 +436,7 @@ public class Game extends BaseAppState {
         InformationReceived info;
 
         if(running){
-            
+            this.currentTpf = tpf;
             time += tpf;
             String text = "Time: " + getRemainingTime() + "\n";
 
