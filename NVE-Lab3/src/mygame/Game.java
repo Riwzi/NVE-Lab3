@@ -408,6 +408,10 @@ public class Game extends BaseAppState {
         return this.currentTpf;
     }
     
+    public float getAcceleration() {
+        return this.acceleration;
+    }
+    
     private AnalogListener analogListener = new AnalogListener() {
         public void onAnalog(String name, float value, float tpf) {
             String sub = name.substring(0, 2);
