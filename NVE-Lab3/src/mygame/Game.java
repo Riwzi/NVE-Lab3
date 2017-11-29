@@ -164,8 +164,7 @@ public class Game extends BaseAppState {
         }
         
         
-        
-
+        this.running = false;
         diskStore = new ArrayList();
         //Set up HUD
         initHud();
@@ -348,10 +347,10 @@ public class Game extends BaseAppState {
         this.mappings.add(mapL);
         this.mappings.add(mapR);
         
-        sapp.getInputManager().addMapping(mapL, new KeyTrigger(KEY_BINDINGS[player_id][0]));
-        sapp.getInputManager().addMapping(mapD, new KeyTrigger(KEY_BINDINGS[player_id][1]));
-        sapp.getInputManager().addMapping(mapR, new KeyTrigger(KEY_BINDINGS[player_id][2]));
-        sapp.getInputManager().addMapping(mapU, new KeyTrigger(KEY_BINDINGS[player_id][3]));
+        sapp.getInputManager().addMapping(mapL, new KeyTrigger(KEY_BINDINGS[0][0]));
+        sapp.getInputManager().addMapping(mapD, new KeyTrigger(KEY_BINDINGS[0][1]));
+        sapp.getInputManager().addMapping(mapR, new KeyTrigger(KEY_BINDINGS[0][2]));
+        sapp.getInputManager().addMapping(mapU, new KeyTrigger(KEY_BINDINGS[0][3]));
         sapp.getInputManager().addListener(analogListener, mapU, mapD, mapL, mapR);
     }
     

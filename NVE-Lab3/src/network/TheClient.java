@@ -128,7 +128,7 @@ public class TheClient extends SimpleApplication implements ClientStateListener{
                 addAskInputs();
                 ask.setEnabled(true);
                 time = 0f;
-                running = false;
+                this.running = false;
             }
         }
     }

@@ -28,7 +28,6 @@ public class Ask extends BaseAppState {
     
     @Override
     protected void onEnable() {
-        System.out.println("Ok");
         System.out.println("Ask: onEnable");
         BitmapFont myFont = sapp.getAssetManager().loadFont("Interface/Fonts/Console.fnt");
         BitmapText hudText = new BitmapText(myFont, false);
