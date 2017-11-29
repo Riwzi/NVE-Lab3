@@ -28,7 +28,7 @@ public class ClientSender implements Runnable{
     
     private void sendMessage(int keyboardInput){
         MoveMessage msg = new MoveMessage(keyboardInput);
-        serverConnection.send(msg);
+        this.serverConnection.send(msg);
         
     }
 

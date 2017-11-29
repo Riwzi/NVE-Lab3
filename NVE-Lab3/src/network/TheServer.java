@@ -51,7 +51,7 @@ public class TheServer extends SimpleApplication {
     
     private Ask ask = new Ask();
     private Game game = new Game(); //Modify game to take the outgoing/incoming queues as arguments, or do i just send incoming as enqueued Callables?
-    private float countdown = 20f;
+    private float countdown = 12f;
     private float countdownRemaining = 0f;
     
     public static void main(String[] args) {
@@ -279,6 +279,7 @@ public class TheServer extends SimpleApplication {
                             Player player = game.getPlayer(connPlayerMap.get(connectionId));
                             Vector2f velocity = player.getVelocity();
                             int id = player.getId();
+                            System.out.println("id " + id);
                             Util.MyAbstractMessage msg = new Util.VelocityChangeMessage(id, velocity);
                             TheServer.this.server.broadcast(msg);
                             return true;

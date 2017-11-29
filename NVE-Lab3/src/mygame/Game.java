@@ -51,7 +51,8 @@ public class Game extends BaseAppState {
     private boolean needCleaning = false;
     private boolean running;
     private BitmapText hudText_bis;
-    private ConcurrentHashMap< Integer, InformationReceived > updateInfos;
+    private static ConcurrentHashMap< Integer, InformationReceived > updateInfos = new ConcurrentHashMap<>();
+
     
     private Frame Frame;
     
@@ -144,7 +145,6 @@ public class Game extends BaseAppState {
     protected void initialize(Application app) {
         System.out.println("Game: initialize");
         sapp = (SimpleApplication) app;
-        updateInfos = new ConcurrentHashMap<>();
     }
    
     @Override
@@ -417,12 +417,15 @@ public class Game extends BaseAppState {
             String sub = name.substring(0, 2);
             try {
                 if (sub.equals("U:")) {
+
                    requestToSend.put(UP);    
                 }
                 if (sub.equals("D:")) {
+
                    requestToSend.put(DOWN);
                 }
                 if (sub.equals("L:")) {
+
                    requestToSend.put(LEFT);
                 }
                 if (sub.equals("R:")) {

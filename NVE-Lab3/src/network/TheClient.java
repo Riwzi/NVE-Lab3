@@ -70,14 +70,15 @@ public class TheClient extends SimpleApplication implements ClientStateListener{
         try {
             //Initialize the queue to use to send informations
             LinkedBlockingQueue<Integer> requestToSend = new LinkedBlockingQueue<>(); 
-            this.clientSender = new ClientSender(serverConnection, requestToSend);
+
             game.setRequestToSend(requestToSend);
                         
             
            
             serverConnection = Network.connectToServer(hostname, port);            
             addAskInputs();
-      
+            this.clientSender = new ClientSender(serverConnection, requestToSend);
+
             // this make the client react on messages when they arrive by
             // calling messageReceived in ClientNetworkMessageListener
             clientListener = new ClientNetworkMessageListener(serverConnection, this, game.getUpdateInfo());

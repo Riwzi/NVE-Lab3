@@ -40,6 +40,7 @@ public class ClientNetworkMessageListener
         serverConnection = server;
         this.theClient = theClient;
         this.updateInfos = updateInfos;
+                
     }
     
          
@@ -80,7 +81,10 @@ public class ClientNetworkMessageListener
             });
         }else if(m instanceof VelocityChangeMessage){
             VelocityChangeMessage msg = (VelocityChangeMessage) m;
+            System.out.println("update " + updateInfos);
+            System.out.println("disk id " + msg.getDiskID());
             InformationReceived info = updateInfos.get(msg.getDiskID());
+            System.out.println("info " + info);
             info.setVelocity(msg.getMessageID(), msg.getNewVelocity());
         }
         else if(m instanceof PositionChangeMessage){
