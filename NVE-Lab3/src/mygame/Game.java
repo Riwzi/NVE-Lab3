@@ -243,11 +243,11 @@ public class Game extends BaseAppState {
     private void initDisks() {
         Random r = new Random();
         for (int i = 0; i<N_NEGATIVE; i++) {
-            Vector2f velocity = randomInitialVelocity(r);
+            Vector2f velocity = new Vector2f(0f, 0f);
             addNegative(NEGATIVE_POSITIONS[i], velocity);
         }
         for (int i = 0; i<N_POSITIVE; i++) {
-            Vector2f velocity = randomInitialVelocity(r);
+            Vector2f velocity = new Vector2f(0f, 0f);
             addPositive(POSITIVE_POSITIONS[i], velocity);
         }
     }
@@ -363,7 +363,7 @@ public class Game extends BaseAppState {
         Player player = new Player(sapp.getAssetManager(), PLAYER_R, disk_id, name);
         updateInfos.put(player.getId(), new InformationReceived());
 
-        Geometry playerGeometry = player.createGeometry(PLAYER_R, FRAME_THICKNESS, ColorRGBA.Green);
+        Geometry playerGeometry = player.createGeometry(PLAYER_R, FRAME_THICKNESS, ColorRGBA.Black);
         sapp.getRootNode().attachChild(player);
         player.attachChild(playerGeometry);
         player.attachChild(createDescription(player_id));
@@ -492,11 +492,11 @@ public class Game extends BaseAppState {
                     if (!d.getId().equals(otherDisk.getId())) {
                         d.diskCollision(otherDisk, tpf);
                     }
-                }
+                }*/
 
                 if (d instanceof Player) {
                     text += ((Player) d).getName() + ": " + d.getScore() + "\n";
-                }*/
+                }
             }
             info = updateInfos.get(TIMEINDEX);
             if(info.updateTime()){
