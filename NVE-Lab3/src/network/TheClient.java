@@ -168,9 +168,9 @@ public class TheClient extends SimpleApplication implements ClientStateListener{
         inputManager.addListener(actionListener, "Restart", "Exit");
     }
     
-    public void gameOver(){
+    public void gameOver(ArrayList<Integer> winners){
         this.running = false;
-        this.time = 0;
+        game.setWinner(winners);
     }
     
     @Override

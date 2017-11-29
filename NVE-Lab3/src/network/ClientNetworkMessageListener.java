@@ -118,11 +118,12 @@ public class ClientNetworkMessageListener
             info.setTime(msg.getMessageID(), msg.getTime());
             
         }
-        else if(m instanceof GameOverMessage){         
+        else if(m instanceof GameOverMessage){
+            final GameOverMessage msg = (GameOverMessage) m;
             Future result = theClient.enqueue(new Callable() {
                 @Override
                 public Object call() throws Exception {
-                    theClient.gameOver();
+                    theClient.gameOver(msg.getWinners());
                     return true;
                 }
             });
