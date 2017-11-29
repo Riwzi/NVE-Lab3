@@ -355,7 +355,6 @@ public class Game extends BaseAppState {
     
     //Adds a non-local player (no keyboard inputs)
     public void addPlayer(int player_id, Vector2f position) {
-        updateInfos.put(player_id, new InformationReceived());  
         String name = playerName.get(player_id);
         Player player = new Player(sapp.getAssetManager(), PLAYER_R, player_id, name);
         updateInfos.put(player.getId(), new InformationReceived());
