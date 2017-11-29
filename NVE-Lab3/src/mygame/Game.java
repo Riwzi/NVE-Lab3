@@ -323,8 +323,7 @@ public class Game extends BaseAppState {
     public void addLocalPlayer(int player_id, Vector2f position) {
         this.userID = player_id;
         String name = playerName.get(player_id);
-        int disk_id = getNextID();
-        Player player = new Player(sapp.getAssetManager(), PLAYER_R, disk_id, name);
+        Player player = new Player(sapp.getAssetManager(), PLAYER_R, player_id, name);
         updateInfos.put(player.getId(), new InformationReceived());
 
         Geometry playerGeometry = player.createGeometry(PLAYER_R, FRAME_THICKNESS, ColorRGBA.Blue);
@@ -338,10 +337,10 @@ public class Game extends BaseAppState {
         
         player.move(position);
         
-        String mapU = "U:"+disk_id;
-        String mapD = "D:"+disk_id;
-        String mapL = "L:"+disk_id;
-        String mapR = "R:"+disk_id;
+        String mapU = "U:"+player_id;
+        String mapD = "D:"+player_id;
+        String mapL = "L:"+player_id;
+        String mapR = "R:"+player_id;
         this.mappings.add(mapU);
         this.mappings.add(mapD);
         this.mappings.add(mapL);
@@ -358,8 +357,7 @@ public class Game extends BaseAppState {
     public void addPlayer(int player_id, Vector2f position) {
         updateInfos.put(player_id, new InformationReceived());  
         String name = playerName.get(player_id);
-        int disk_id = getNextID();
-        Player player = new Player(sapp.getAssetManager(), PLAYER_R, disk_id, name);
+        Player player = new Player(sapp.getAssetManager(), PLAYER_R, player_id, name);
         updateInfos.put(player.getId(), new InformationReceived());
 
         Geometry playerGeometry = player.createGeometry(PLAYER_R, FRAME_THICKNESS, ColorRGBA.Black);
