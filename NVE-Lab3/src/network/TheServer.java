@@ -50,7 +50,7 @@ public class TheServer extends SimpleApplication {
     
     private Ask ask = new Ask();
     private Game game = new Game(); //Modify game to take the outgoing/incoming queues as arguments, or do i just send incoming as enqueued Callables?
-    private float countdown = 15f;
+    private float countdown = 20f;
     private float countdownRemaining = 0f;
     
     public static void main(String[] args) {
@@ -126,7 +126,8 @@ public class TheServer extends SimpleApplication {
             final ArrayList<Util.PlayerLight> playerList = players;
             // Send different GameSetupMessages to each player (the difference is the playerIDs)
             for (final Util.PlayerLight player: players) {
-                final HostedConnection conn = TheServer.this.server.getConnection(player.getName());
+                int connectionID = this.connPlayerMap.getKey(player.getName());
+                final HostedConnection conn = TheServer.this.server.getConnection(connectionID);
                 outgoing.put(new Callable() {
                     @Override
                     public Object call() throws Exception {
