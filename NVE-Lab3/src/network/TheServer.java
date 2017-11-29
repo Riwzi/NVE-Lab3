@@ -270,7 +270,8 @@ public class TheServer extends SimpleApplication {
             if (m instanceof Util.MoveMessage) {
                 System.out.println("MoveMessage from client #" + source.getId());
                 final int connectionId = source.getId();
-                final int direction = ((Util.MoveMessage) m).getDirection();
+                final Util.MoveMessage msg = ((Util.MoveMessage) m);
+                //final int direction = ((Util.MoveMessage) m).getDirection();
                 
                 Future result = TheServer.this.enqueue(new Callable() {
                     @Override
@@ -279,6 +280,13 @@ public class TheServer extends SimpleApplication {
                         Player player = game.getPlayer(connPlayerMap.get(connectionId));
 
                         //Increase the velocity in the given direction
+                        float velocityPerChange = game.getTpf()*game.getAcceleration();
+                        player.addVelocity(new Vector2f(0, velocityPerChange*msg.getNbUp()));
+                        player.addVelocity(new Vector2f(0, -velocityPerChange*msg.getNbDown()));
+                        player.addVelocity(new Vector2f(velocityPerChange*msg.getNbRight(), 0));
+                        player.addVelocity(new Vector2f(-velocityPerChange*msg.getNbLeft(), 0));
+                        return true;
+                        /*
                         Vector2f velocity;
                         switch (direction) {
                             case 0: velocity = new Vector2f(0, game.getTpf()*game.getAcceleration());
@@ -294,6 +302,7 @@ public class TheServer extends SimpleApplication {
                         }
                         player.addVelocity(velocity);
                         return true;
+                        */
                     }
                 });
                 
