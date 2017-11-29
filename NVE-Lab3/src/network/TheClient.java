@@ -157,9 +157,9 @@ public class TheClient extends SimpleApplication implements ClientStateListener{
     public void putConfig(int userID ,ArrayList<PlayerLight> playersList){
         for (PlayerLight player : playersList){
             if(player.getID() != userID)
-                game.addPlayer(player.getName(), player.getPosition());
+                game.addPlayer(player.getID(), player.getName(), player.getPosition());
             else
-                game.addLocalPlayer(player.getName(), player.getPosition());
+                game.addLocalPlayer(player.getID(), player.getName(), player.getPosition());
         }
     }
     

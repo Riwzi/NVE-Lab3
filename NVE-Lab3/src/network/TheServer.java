@@ -102,7 +102,7 @@ public class TheServer extends SimpleApplication {
     
     public void putConfig(ArrayList<Util.PlayerLight> playersList){
         for (Util.PlayerLight player : playersList){
-            game.addPlayer(player.getName(), player.getPosition());
+            game.addPlayer(player.getID(), player.getName(), player.getPosition());
         }
     }
     
@@ -304,7 +304,6 @@ public class TheServer extends SimpleApplication {
                             Player player = game.getPlayer(connPlayerMap.get(connectionId));
                             Vector2f velocity = player.getVelocity();
                             int id = player.getId();
-                            System.out.println("id " + id);
                             Util.MyAbstractMessage msg = new Util.VelocityChangeMessage(id, velocity);
                             TheServer.this.server.broadcast(msg);
                             return true;

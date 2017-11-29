@@ -320,20 +320,20 @@ public class Game extends BaseAppState {
     }
     
     //Adds a local player to the Game. A local player has KeyInputs
-    public void addLocalPlayer(int player_id, Vector2f position) {
+    public void addLocalPlayer(int player_id, int player_name_id, Vector2f position) {
         this.userID = player_id;
-        String name = playerName.get(player_id);
+        String name = playerName.get(player_name_id);
         Player player = new Player(sapp.getAssetManager(), PLAYER_R, player_id, name);
         updateInfos.put(player.getId(), new InformationReceived());
 
         Geometry playerGeometry = player.createGeometry(PLAYER_R, FRAME_THICKNESS, ColorRGBA.Blue);
         sapp.getRootNode().attachChild(player);
         player.attachChild(playerGeometry);
-        player.attachChild(createDescription(player_id));
+        player.attachChild(createDescription(player_name_id));
         player.move(new Vector3f(0f, 0f, -FRAME_THICKNESS));
         
         diskStore.add(player);
-        playerMap.put(player_id, player);
+        playerMap.put(player_name_id, player);
         
         player.move(position);
         
@@ -354,20 +354,19 @@ public class Game extends BaseAppState {
     }
     
     //Adds a non-local player (no keyboard inputs)
-    public void addPlayer(int player_id, Vector2f position) {
-        updateInfos.put(player_id, new InformationReceived());  
-        String name = playerName.get(player_id);
+    public void addPlayer(int player_id, int player_name_id, Vector2f position) {
+        String name = playerName.get(player_name_id);
         Player player = new Player(sapp.getAssetManager(), PLAYER_R, player_id, name);
         updateInfos.put(player.getId(), new InformationReceived());
 
         Geometry playerGeometry = player.createGeometry(PLAYER_R, FRAME_THICKNESS, ColorRGBA.Black);
         sapp.getRootNode().attachChild(player);
         player.attachChild(playerGeometry);
-        player.attachChild(createDescription(player_id));
+        player.attachChild(createDescription(player_name_id));
         player.move(new Vector3f(0f, 0f, -FRAME_THICKNESS));
         
         diskStore.add(player);
-        playerMap.put(player_id, player);
+        playerMap.put(player_name_id, player);
         
         player.move(position);
     }
