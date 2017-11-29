@@ -54,7 +54,7 @@ public class ClientNetworkMessageListener
         
         if (m instanceof Util.GameStartMessage) {
             
-
+            System.out.println("need to start game");
             Future result;
             result = theClient.enqueue(new Callable() {
                 @Override
@@ -65,6 +65,8 @@ public class ClientNetworkMessageListener
             });
 
         }else if (m instanceof Util.GameSetupMessage){
+            System.out.println("Receive put config");
+
             final GameSetupMessage msg = (GameSetupMessage) m;
             final ArrayList<PlayerLight> players = msg.getPlayers();
             

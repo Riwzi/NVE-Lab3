@@ -363,7 +363,7 @@ public class Game extends BaseAppState {
         Player player = new Player(sapp.getAssetManager(), PLAYER_R, disk_id, name);
         updateInfos.put(player.getId(), new InformationReceived());
 
-        Geometry playerGeometry = player.createGeometry(PLAYER_R, FRAME_THICKNESS, ColorRGBA.Green);
+        Geometry playerGeometry = player.createGeometry(PLAYER_R, FRAME_THICKNESS, ColorRGBA.Black);
         sapp.getRootNode().attachChild(player);
         player.attachChild(playerGeometry);
         player.attachChild(createDescription(player_id+1));
