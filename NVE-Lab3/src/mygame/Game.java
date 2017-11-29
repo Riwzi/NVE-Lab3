@@ -243,11 +243,11 @@ public class Game extends BaseAppState {
     private void initDisks() {
         Random r = new Random();
         for (int i = 0; i<N_NEGATIVE; i++) {
-            Vector2f velocity = randomInitialVelocity(r);
+            Vector2f velocity = new Vector2f(0f, 0f);
             addNegative(NEGATIVE_POSITIONS[i], velocity);
         }
         for (int i = 0; i<N_POSITIVE; i++) {
-            Vector2f velocity = randomInitialVelocity(r);
+            Vector2f velocity = new Vector2f(0f, 0f);
             addPositive(POSITIVE_POSITIONS[i], velocity);
         }
     }
@@ -488,11 +488,11 @@ public class Game extends BaseAppState {
                     if (!d.getId().equals(otherDisk.getId())) {
                         d.diskCollision(otherDisk, tpf);
                     }
-                }
+                }*/
 
                 if (d instanceof Player) {
                     text += ((Player) d).getName() + ": " + d.getScore() + "\n";
-                }*/
+                }
             }
             info = updateInfos.get(TIMEINDEX);
             if(info.updateTime()){
