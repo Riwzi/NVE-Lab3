@@ -81,38 +81,49 @@ public class ClientNetworkMessageListener
             });
         }else if(m instanceof VelocityChangeMessage){
             VelocityChangeMessage msg = (VelocityChangeMessage) m;
-            System.out.println("update " + updateInfos);
-            System.out.println("disk id " + msg.getDiskID());
+     
             InformationReceived info = updateInfos.get(msg.getDiskID());
-            System.out.println("info " + info);
-            info.setVelocity(msg.getMessageID(), msg.getNewVelocity());
+            System.out.println(updateInfos.get(msg.getDiskID()).getVelocity());
+            info.setVelocity(10, new Vector2f(1f, 1f));
+            updateInfos.put(msg.getDiskID(), info);
+            System.out.println();
+
         }
         else if(m instanceof PositionChangeMessage){
             PositionChangeMessage msg = (PositionChangeMessage) m;
             InformationReceived info = updateInfos.get(msg.getDiskID());
             info.setPosition(msg.getMessageID(), msg.getNewPosition());
+            updateInfos.put(msg.getDiskID(), info);
+            
         }
         else if(m instanceof PositionAndVelocityChangeMessage){
             PositionAndVelocityChangeMessage msg = (PositionAndVelocityChangeMessage) m;
             InformationReceived info = updateInfos.get(msg.getDiskID());
             info.setPosition(msg.getMessageID(), msg.getNewPosition());
             info.setVelocity(msg.getMessageID(), msg.getNewVelocity());
+            updateInfos.put(msg.getDiskID(), info);
+            
         }
         else if(m instanceof ScoreChange){
             ScoreChange msg = (ScoreChange) m;
             InformationReceived info = updateInfos.get(msg.getPlayerID());
             info.setScore(msg.getMessageID(), msg.getNewScore());
+            updateInfos.put(msg.getPlayerID(), info);
+            
         }
         else if(m instanceof ScoreChange){
             ScoreChange msg = (ScoreChange) m;
             InformationReceived info = updateInfos.get(msg.getPlayerID());
             info.setScore(msg.getMessageID(), msg.getNewScore());
+            updateInfos.put(msg.getPlayerID(), info);
         }
         else if(m instanceof ScoreUpdateMessage){
             ScoreUpdateMessage msg = (ScoreUpdateMessage) m;
             for (PlayerLight player : msg.getPlayers()){
                 InformationReceived info = updateInfos.get(player.getID());
                 info.setScore(msg.getMessageID(), player.getScore());
+                updateInfos.put(player.getID(), info);
+
             }
             
         }
@@ -120,7 +131,8 @@ public class ClientNetworkMessageListener
             TimeUpdateMessage msg = (TimeUpdateMessage) m;
             InformationReceived info = updateInfos.get(TIMEINDEX);
             info.setTime(msg.getMessageID(), msg.getTime());
-            
+            updateInfos.put(TIMEINDEX, info);
+
         }
         else if(m instanceof GameOverMessage){
             final GameOverMessage msg = (GameOverMessage) m;

@@ -117,4 +117,8 @@ public class InformationReceived {
         }
     }
     
+    public int getNbId(){
+        return seq2;
+    }
+    
 }
