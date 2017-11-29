@@ -107,6 +107,7 @@ public class Util {
         
         public GameSetupMessage(int myId, ArrayList<PlayerLight> players) {
             this.players = players;
+            this.myId = myId;
         }
         
         public ArrayList<PlayerLight> getPlayers() {

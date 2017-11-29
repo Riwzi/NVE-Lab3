@@ -97,9 +97,7 @@ public class TheClient extends SimpleApplication implements ClientStateListener{
             // finally start the communication channel to the server
             serverConnection.addClientStateListener(this);
             serverConnection.start();
-            System.out.println("la");
             new Thread(clientSender).start();
-            System.out.println("la2");
             
         }catch (IOException ex) {
             ex.printStackTrace();
@@ -158,9 +156,9 @@ public class TheClient extends SimpleApplication implements ClientStateListener{
     public void putConfig(int userID ,ArrayList<PlayerLight> playersList){
         for (PlayerLight player : playersList){
             if(player.getID() != userID)
-                game.addPlayer(player.getID(), player.getPosition());
+                game.addPlayer(player.getName(), player.getPosition());
             else
-                game.addLocalPlayer(userID, player.getPosition());
+                game.addLocalPlayer(player.getName(), player.getPosition());
         }
     }
     

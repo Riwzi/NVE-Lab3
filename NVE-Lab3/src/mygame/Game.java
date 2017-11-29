@@ -323,7 +323,7 @@ public class Game extends BaseAppState {
     //Adds a local player to the Game. A local player has KeyInputs
     public void addLocalPlayer(int player_id, Vector2f position) {
         this.userID = player_id;
-        String name = playerName.get(player_id+1);
+        String name = playerName.get(player_id);
         int disk_id = getNextID();
         Player player = new Player(sapp.getAssetManager(), PLAYER_R, disk_id, name);
         updateInfos.put(player.getId(), new InformationReceived());
@@ -331,7 +331,7 @@ public class Game extends BaseAppState {
         Geometry playerGeometry = player.createGeometry(PLAYER_R, FRAME_THICKNESS, ColorRGBA.Blue);
         sapp.getRootNode().attachChild(player);
         player.attachChild(playerGeometry);
-        player.attachChild(createDescription(player_id+1));
+        player.attachChild(createDescription(player_id));
         player.move(new Vector3f(0f, 0f, -FRAME_THICKNESS));
         
         diskStore.add(player);
@@ -358,7 +358,7 @@ public class Game extends BaseAppState {
     //Adds a non-local player (no keyboard inputs)
     public void addPlayer(int player_id, Vector2f position) {
         updateInfos.put(player_id, new InformationReceived());  
-        String name = playerName.get(player_id+1);
+        String name = playerName.get(player_id);
         int disk_id = getNextID();
         Player player = new Player(sapp.getAssetManager(), PLAYER_R, disk_id, name);
         updateInfos.put(player.getId(), new InformationReceived());
@@ -366,7 +366,7 @@ public class Game extends BaseAppState {
         Geometry playerGeometry = player.createGeometry(PLAYER_R, FRAME_THICKNESS, ColorRGBA.Green);
         sapp.getRootNode().attachChild(player);
         player.attachChild(playerGeometry);
-        player.attachChild(createDescription(player_id+1));
+        player.attachChild(createDescription(player_id));
         player.move(new Vector3f(0f, 0f, -FRAME_THICKNESS));
         
         diskStore.add(player);
