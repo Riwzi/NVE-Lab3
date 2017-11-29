@@ -177,17 +177,45 @@ public class Util {
     //                  3 for 'right', 
     @Serializable
     public static class MoveMessage extends MyAbstractMessage {
-        private int direction;
+        private int nbUP;
+        private int nbDown;
+        private int nbLeft;
+        private int nbRight;
         
         public MoveMessage() {
+            this.nbDown = 0;
+            this.nbLeft = 0;
+            this.nbUP = 0;
+            this.nbRight = 0;
         }
         
-        public MoveMessage(int direction) {
-            this.direction = direction;
+        public void incrementDirection(int direction) {
+            switch (direction) {
+                case UP: nbUP++;
+                        break;
+                case DOWN: nbDown++;
+                        break;
+                case LEFT: nbLeft++;
+                        break;
+                case RIGHT: nbRight++;
+                        break;
+            }
         }
         
-        public int getDirection() {
-            return direction;
+        public int getNbUp(){
+           return nbUP;
+        }
+        
+        public int getNbDown(){
+           return nbDown;
+        }
+        
+        public int getNbRight(){
+           return nbRight;
+        }
+        
+        public int getNbLeft(){
+           return nbLeft;
         }
     }
     
