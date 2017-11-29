@@ -247,7 +247,6 @@ public class TheServer extends SimpleApplication {
                 final int connectionId = source.getId();
                 final int direction = ((Util.MoveMessage) m).getDirection();
                 
-                /*
                 Future result = TheServer.this.enqueue(new Callable() {
                     @Override
                     public Object call() {
@@ -257,14 +256,38 @@ public class TheServer extends SimpleApplication {
                         //Increase the velocity in the given direction
                         Vector2f velocity;
                         switch (direction) {
-                            case 0: velocity = new Vector2f()
-                                    
+                            case 0: velocity = new Vector2f(0, game.getTpf()*game.getAcceleration());
+                                    break;
+                            case 1: velocity = new Vector2f(0, -game.getTpf()*game.getAcceleration());
+                                    break;
+                            case 2: velocity = new Vector2f(game.getTpf()*game.getAcceleration(), 0);
+                                    break;
+                            case 3: velocity = new Vector2f(-game.getTpf()*game.getAcceleration(), 0);
+                                    break;
+                            default: velocity = new Vector2f(0, 0);
+                                    break;
                         }
                         player.addVelocity(velocity);
                         return true;
                     }
                 });
-                */
+                
+                try {
+                    outgoing.put(new Callable() {
+                        @Override
+                        public Object call() throws Exception {
+                            Player player = game.getPlayer(connPlayerMap.get(connectionId));
+                            Vector2f velocity = player.getVelocity();
+                            int id = player.getId();
+                            Util.MyAbstractMessage msg = new Util.VelocityChangeMessage(id, velocity);
+                            TheServer.this.server.broadcast(msg);
+                            return true;
+                        }
+                    });
+                } catch(InterruptedException ex) {
+                    Logger.getLogger(TheServer.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                
             } else {
                 // This should only happen if the clients sends messages they shouldn't
                 // Programming error
