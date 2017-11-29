@@ -36,8 +36,10 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import network.InformationReceived;
+import network.Util;
 import static network.Util.DOWN;
 import static network.Util.LEFT;
+import network.Util.PlayerInput;
 import static network.Util.RIGHT;
 import static network.Util.UP;
 
@@ -138,7 +140,7 @@ public class Game extends BaseAppState {
     private HashMap<Integer, Player> playerMap;
     private Map<Integer, String> playerName;
     private int userID;
-    private LinkedBlockingQueue<Integer> requestToSend; 
+    private LinkedBlockingQueue<PlayerInput> requestToSend;
 
     
     @Override
@@ -414,19 +416,22 @@ public class Game extends BaseAppState {
             String sub = name.substring(0, 2);
             try {
                 if (sub.equals("U:")) {
-
-                   requestToSend.put(UP);    
+                   requestToSend.put(new Util.PlayerInput(
+                           new Vector2f(0f, acceleration*tpf), tpf));
                 }
                 if (sub.equals("D:")) {
 
-                   requestToSend.put(DOWN);
+                   requestToSend.put(new Util.PlayerInput(
+                           new Vector2f(0f, -acceleration*tpf), tpf));
                 }
                 if (sub.equals("L:")) {
 
-                   requestToSend.put(LEFT);
+                   requestToSend.put(new Util.PlayerInput(
+                           new Vector2f(-acceleration*tpf, 0f), tpf));
                 }
                 if (sub.equals("R:")) {
-                   requestToSend.put(RIGHT);
+                   requestToSend.put(new Util.PlayerInput(
+                           new Vector2f(acceleration*tpf, 0f), tpf));
                 }
                } catch (InterruptedException ex) {
                         Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
@@ -675,7 +680,7 @@ public class Game extends BaseAppState {
         running = true;
     }
     
-    public void setRequestToSend(LinkedBlockingQueue<Integer> requestToSend){
+    public void setRequestToSend(LinkedBlockingQueue<PlayerInput> requestToSend){
         this.requestToSend = requestToSend;
     } 
     

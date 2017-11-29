@@ -69,7 +69,7 @@ public class TheClient extends SimpleApplication implements ClientStateListener{
         
         try {
             //Initialize the queue to use to send informations
-            LinkedBlockingQueue<Integer> requestToSend = new LinkedBlockingQueue<>(); 
+            LinkedBlockingQueue<PlayerInput> requestToSend = new LinkedBlockingQueue<>();
 
             game.setRequestToSend(requestToSend);
                         

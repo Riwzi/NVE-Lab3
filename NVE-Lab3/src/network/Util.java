@@ -177,45 +177,37 @@ public class Util {
     //                  3 for 'right', 
     @Serializable
     public static class MoveMessage extends MyAbstractMessage {
-        private int nbUP;
-        private int nbDown;
-        private int nbLeft;
-        private int nbRight;
-        
+        private Vector2f acceleration;
+
         public MoveMessage() {
-            this.nbDown = 0;
-            this.nbLeft = 0;
-            this.nbUP = 0;
-            this.nbRight = 0;
+            this.acceleration = new Vector2f(0f, 0f);
         }
         
-        public void incrementDirection(int direction) {
-            switch (direction) {
-                case UP: nbUP++;
-                        break;
-                case DOWN: nbDown++;
-                        break;
-                case LEFT: nbLeft++;
-                        break;
-                case RIGHT: nbRight++;
-                        break;
-            }
+        public void updateAcceleration(Vector2f amount) {
+            acceleration = acceleration.add(amount);
         }
         
-        public int getNbUp(){
-           return nbUP;
+        public Vector2f getAcceleration() {
+            return acceleration;
+        }
+
+    }
+
+    public static class PlayerInput {
+        private Vector2f acceleration;
+        private float tpf;
+        
+        public PlayerInput(Vector2f acceleration, float tpf) {
+            this.acceleration = acceleration;
+            this.tpf = tpf;
         }
         
-        public int getNbDown(){
-           return nbDown;
+        public Vector2f getAcceleration() {
+            return acceleration;
         }
         
-        public int getNbRight(){
-           return nbRight;
-        }
-        
-        public int getNbLeft(){
-           return nbLeft;
+        public float getTpf() {
+            return tpf;
         }
     }
     
