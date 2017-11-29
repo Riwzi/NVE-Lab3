@@ -679,4 +679,13 @@ public class Game extends BaseAppState {
     public ConcurrentHashMap< Integer, InformationReceived > getUpdateInfo(){
         return  this.updateInfos;
     }
+
+    public void setWinner(ArrayList<Integer> winners) {
+        String text = "Time: 0\n";
+        for (Integer integ : winners){
+            text += "Player " + integ + " winss ! \n";
+        }
+
+        hudText.setText(text);
+    }
 }
