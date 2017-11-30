@@ -18,6 +18,7 @@ import com.jme3.renderer.RenderManager;
 import com.jme3.system.JmeContext;
 import disk.Disk;
 import disk.Player;
+import disk.PositiveDisk;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -228,6 +229,12 @@ public class TheServer extends SimpleApplication {
                                 if (theOtherDisk instanceof Player) {
                                     ScoreChangeMessage(theOtherDisk.getId(), theOtherDisk.getScore());
                                 }
+                                if (theDisk instanceof PositiveDisk && theOtherDisk instanceof Player) {
+                                    RemovePointMessage(theDisk.getId());
+                                }
+                                if (theOtherDisk instanceof PositiveDisk && theDisk instanceof Player) {
+                                    RemovePointMessage(theOtherDisk.getId());
+                                }
                             }
                         }
                     }
@@ -269,6 +276,24 @@ public class TheServer extends SimpleApplication {
                 @Override
                 public Object call() throws Exception {
                     Util.MyAbstractMessage msg = new Util.PositionAndVelocityChangeMessage(_diskId, _position, _velocity);
+                    msg.setReliable(true);
+                    TheServer.this.server.broadcast(msg);
+                    return true;
+                }
+            });
+        } catch (InterruptedException ex) {
+            Logger.getLogger(TheServer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    public void RemovePointMessage(int diskId) {
+        final int _diskId = diskId;
+        try {
+            outgoing.put(new Callable() {
+                @Override
+                public Object call() throws Exception {
+                    Util.MyAbstractMessage msg = new Util.RemovePointMessage(_diskId);
+                    msg.setReliable(true);
                     TheServer.this.server.broadcast(msg);
                     return true;
                 }
