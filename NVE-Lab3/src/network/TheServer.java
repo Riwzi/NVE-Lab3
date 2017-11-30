@@ -58,7 +58,9 @@ public class TheServer extends SimpleApplication {
     private final ArrayList<Integer> winners;
     
     private static final float SERVER_TIME_SEND_RATE = 30f;
-    private static float time_since_last_update = 0;
+    private static float time_since_last_time_update = 0;
+    private static final float SERVER_POSITION_SEND_RATE = 30f;
+    private static float time_since_last_position_update = 0;
     
     public static void main(String[] args) {
         System.out.println("Server initializing");
@@ -267,14 +269,38 @@ public class TheServer extends SimpleApplication {
     
     
     public void SendTimeMessage(float tpf) {
-        TheServer.time_since_last_update += tpf;
-        if (time_since_last_update >= 1/TheServer.SERVER_TIME_SEND_RATE); {
-            TheServer.time_since_last_update = 0f;
+        TheServer.time_since_last_time_update += tpf;
+        if (time_since_last_time_update >= 1/TheServer.SERVER_TIME_SEND_RATE); {
+            TheServer.time_since_last_time_update = 0f;
             try {
                 outgoing.put(new Callable() {
                     @Override
                     public Object call() throws Exception {
                         Util.MyAbstractMessage msg = new Util.TimeUpdateMessage(Game.getRemainingTime());
+                        TheServer.this.server.broadcast(msg);
+                        return true;
+                    }
+                });
+            } catch (InterruptedException ex) {
+                Logger.getLogger(TheServer.class.getName()).log(Level.SEVERE, null, ex);
+            }
+         }
+    }
+    
+    public void PositionsUpdateMessage(float tpf) {
+        TheServer.time_since_last_position_update += tpf;
+        if (time_since_last_position_update >= 1/TheServer.SERVER_POSITION_SEND_RATE); {
+            TheServer.time_since_last_position_update = 0f;
+            try {
+                outgoing.put(new Callable() {
+                    @Override
+                    public Object call() throws Exception {
+                        ArrayList<Disk> diskStore = game.getDisks();
+                        ArrayList<Util.DiskLite> diskLite = new ArrayList<>();
+                        for (Disk disk: diskStore) {
+                            diskLite.add(new Util.DiskLite(disk.getId(), disk.getPosition(), disk.getVelocity()));
+                        }
+                        Util.MyAbstractMessage msg = new Util.DisksUpdateMessage(diskLite);
                         TheServer.this.server.broadcast(msg);
                         return true;
                     }

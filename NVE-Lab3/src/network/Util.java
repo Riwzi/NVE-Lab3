@@ -108,9 +108,10 @@ public class Util {
         public DiskLite() {
         }
         
-        public DiskLite(int diskID, Vector2f position) {
+        public DiskLite(int diskID, Vector2f position, Vector2f velocity) {
             this.diskID = diskID;
             this.position = position;
+            this.velocity = velocity;
         }
         
         public int getID() {
