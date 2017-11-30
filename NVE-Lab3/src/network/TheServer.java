@@ -63,8 +63,8 @@ public class TheServer extends SimpleApplication {
     public static void main(String[] args) {
         System.out.println("Server initializing");
         Util.initialiseSerializables();
-        //new TheServer(Util.PORT).start(JmeContext.Type.Headless);
-        new TheServer(Util.PORT).start();
+        new TheServer(Util.PORT).start(JmeContext.Type.Headless);
+        //new TheServer(Util.PORT).start();
     }
 
     public TheServer(int port) {
@@ -147,6 +147,7 @@ public class TheServer extends SimpleApplication {
                     }
                 });
             }
+            System.out.println("TIME BEFORE "+Game.getRemainingTime());
             Thread.sleep(delayUntilStart);
             outgoing.put(new Callable() {
                 @Override
@@ -158,7 +159,7 @@ public class TheServer extends SimpleApplication {
                 }
             });
             game.startGame();
-            Game.resetTimer();
+            Game.increaseGameLength(delayUntilStart/1000);
         } catch(InterruptedException ex) {
             Logger.getLogger(TheServer.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -166,7 +167,6 @@ public class TheServer extends SimpleApplication {
 
     @Override
     public void simpleUpdate(float tpf) {
-        
         if (game.isEnabled()) {
             if (Game.getRemainingTime() <= 0) {
                 
@@ -176,14 +176,18 @@ public class TheServer extends SimpleApplication {
                 this.countdownRemaining = this.countdown;
                 winners.clear();
                 int highestScore = 0;
-                for (int i = 0; i < connPlayerMap.size(); i++) {
-                    Disk player = game.getPlayer(connPlayerMap.get(i));
+                Enumeration<Integer> values = this.connPlayerMap.values();
+                while (values.hasMoreElements()){
+                    int playerID = values.nextElement();
+                    System.out.println("Player: "+playerID);
+                    Disk player = game.getPlayer(playerID);
                     if (player.getScore() > highestScore || highestScore == 0) {
                         highestScore = player.getScore();
                     }
                 }
-                for (int i = 0; i < connPlayerMap.size(); i++) {
-                    int playerID = connPlayerMap.get(i);
+                values = this.connPlayerMap.values();
+                while (values.hasMoreElements()){
+                    int playerID = values.nextElement();
                     Player player = game.getPlayer(playerID);
                     if (player.getScore() == highestScore) {
                         winners.add(playerID);
@@ -488,6 +492,10 @@ public class TheServer extends SimpleApplication {
         
         public Enumeration<K> keys() {
             return map.keys();
+        }
+        
+        public int mappingCount() {
+            return (int)map.mappingCount();
         }
     }
 }
