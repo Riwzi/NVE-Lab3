@@ -54,6 +54,7 @@ public class TheServer extends SimpleApplication {
     private Game game = new Game(); //Modify game to take the outgoing/incoming queues as arguments, or do i just send incoming as enqueued Callables?
     private float countdown = 12f;
     private float countdownRemaining = 0f;
+    private long delayUntilStart = 2000; //ms
     
     public static void main(String[] args) {
         System.out.println("Server initializing");
@@ -141,7 +142,7 @@ public class TheServer extends SimpleApplication {
                     }
                 });
             }
-            Thread.sleep(5000);
+            Thread.sleep(delayUntilStart);
             outgoing.put(new Callable() {
                 @Override
                 public Object call() throws Exception {
@@ -161,6 +162,7 @@ public class TheServer extends SimpleApplication {
     public void simpleUpdate(float tpf) {
         if (game.isEnabled()) {
             if (Game.getRemainingTime() <= 0) {
+                game.resetIDs();
                 game.setEnabled(false);
                 ask.setEnabled(true);
                 this.countdownRemaining = this.countdown;
@@ -389,26 +391,12 @@ public class TheServer extends SimpleApplication {
         }
         @Override
         public void connectionRemoved(Server s, HostedConnection c) {
-            //IMPORTANT: will this method run if i close the connection in connectionAdded? in that case i shouldn't enqueue calls to main thread
             System.out.println("Client #"+c.getId() + " has disconnected from the server");
-            
             //This removes the player from the list of used playerIDs
             if (TheServer.this.connPlayerMap.get(c.getId()) != null) {
-                
-                Future result = TheServer.this.enqueue(new Callable() {
-                    @Override
-                    public Object call() {
-                        //Need method in game to remove a player from the active players
-                        //THIS SHOULD NOT REMOVE THEIR DISK FROM THE GAME, as we would need to send packets to all clients to remove the disk
-                        //Just let the disk slide around without any further movement controls
-                        //Method should just ensure that the disconnected client wont participate in the NEXT game and that we won't send any more updates
-
-                        return true;
-                    }
-                });
+                TheServer.this.connPlayerMap.remove(c.getId());
             }
         }
-        
     }
     
     /**

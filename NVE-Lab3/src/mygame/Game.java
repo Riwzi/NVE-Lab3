@@ -415,6 +415,10 @@ public class Game extends BaseAppState {
         time = START_TIME;
     }
     
+    public void resetIDs() {
+        this.nextID = 0;
+    }
+    
     private AnalogListener analogListener = new AnalogListener() {
         public void onAnalog(String name, float value, float tpf) {
             String sub = name.substring(0, 2);
