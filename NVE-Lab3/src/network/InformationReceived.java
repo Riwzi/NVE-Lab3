@@ -16,6 +16,7 @@ public class InformationReceived {
     private int lastseq2, seq2;
     private int lastseq3, seq3;
     private float time;
+    private int nbOfDotsToRemove;
     
     private Vector2f position;
     private Vector2f velocity;
@@ -34,6 +35,7 @@ public class InformationReceived {
         velocity = new Vector2f();
         score = 0;
         time = 0;
+        nbOfDotsToRemove = 0;
     }
     
     
@@ -119,6 +121,20 @@ public class InformationReceived {
     
     public int getNbId(){
         return seq2;
+    }
+
+    void setRemoveDot() {
+        ++nbOfDotsToRemove;
+    }
+    
+    public boolean needToRemove(){
+        return nbOfDotsToRemove != 0;
+    }
+    
+    public int getNbOfDotsToRemove(){
+        int toReturn = nbOfDotsToRemove;
+        nbOfDotsToRemove = 0;
+        return toReturn;
     }
     
 }

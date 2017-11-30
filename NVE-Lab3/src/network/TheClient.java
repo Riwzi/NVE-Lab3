@@ -93,6 +93,7 @@ public class TheClient extends SimpleApplication implements ClientStateListener{
                 PositionsUpdateMessage.class,
                 ScoreUpdateMessage.class,
                 MoveMessage.class,
+                RemovePointMessage.class,
                 TimeUpdateMessage.class);
             
             // finally start the communication channel to the server
@@ -171,6 +172,7 @@ public class TheClient extends SimpleApplication implements ClientStateListener{
     
     public void gameOver(ArrayList<Integer> winners){
         game.setWinner(winners);
+        running = false;
     }
     
     @Override
