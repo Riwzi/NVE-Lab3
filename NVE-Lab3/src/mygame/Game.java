@@ -453,12 +453,19 @@ public class Game extends BaseAppState {
 
             for (Disk d: diskStore) {
                 info = updateInfos.get(d.getId());
+                //if(d.getId() == 16){
+                  //  System.out.println("Update player 1");
+               // }
+
                 if(info.updatePosition()){
-                    d.setLocalTranslation(info.getPosition().getX(), info.getPosition().getY(), 0);
+                    System.out.println("Update Position");
+                    d.setPosition(info.getPosition());
                 }
                 
                 if(info.updateVelocity()){
-                    d.setLocalTranslation(info.getVelocity().getX(), info.getVelocity().getY(), 0);
+                    System.out.println("Update Velocity");
+
+                    d.setVelocity(info.getVelocity());
                 }
                 
                 if(info.updateScore()){

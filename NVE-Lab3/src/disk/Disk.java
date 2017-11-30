@@ -277,6 +277,10 @@ public abstract class Disk extends Node implements Comparable<Disk>{
     public int compareTo(Disk comparePlayer) {
         return this.score - comparePlayer.getScore();
     }
+    
+    public void setPosition(Vector2f position){
+        this.position = position;
+    }
 }
 
 

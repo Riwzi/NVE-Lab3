@@ -67,7 +67,7 @@ public class InformationReceived {
     
     public Vector2f getVelocity(){
         lastseq2 = seq2;
-        return position;
+        return velocity;
     }
     
     public void setVelocity(int seqNb, Vector2f velocity){
