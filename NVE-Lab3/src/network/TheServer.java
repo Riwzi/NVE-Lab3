@@ -55,6 +55,7 @@ public class TheServer extends SimpleApplication {
     private float countdown = 12f;
     private float countdownRemaining = 0f;
     private long delayUntilStart = 2000; //ms
+    private final ArrayList<Integer> winners;
     
     private static final float SERVER_TIME_SEND_RATE = 30f;
     private static float time_since_last_update = 0;
@@ -75,6 +76,7 @@ public class TheServer extends SimpleApplication {
         game.setEnabled(false);
         stateManager.attach(game);
         stateManager.attach(ask);
+        winners = new ArrayList<>();
         
         this.countdownRemaining = this.countdown;
     }
@@ -164,13 +166,15 @@ public class TheServer extends SimpleApplication {
 
     @Override
     public void simpleUpdate(float tpf) {
+        
         if (game.isEnabled()) {
             if (Game.getRemainingTime() <= 0) {
+                
                 game.resetIDs();
                 game.setEnabled(false);
                 ask.setEnabled(true);
                 this.countdownRemaining = this.countdown;
-                final ArrayList<Integer> winners = new ArrayList();
+                winners.clear();
                 int highestScore = 0;
                 for (int i = 0; i < connPlayerMap.size(); i++) {
                     Disk player = game.getPlayer(connPlayerMap.get(i));
