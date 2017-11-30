@@ -279,6 +279,7 @@ public abstract class Disk extends Node implements Comparable<Disk>{
     }
     
     public void setPosition(Vector2f position){
+        super.setLocalTranslation(position.getX(), position.getY(), -24f);
         this.position = position;
     }
 }

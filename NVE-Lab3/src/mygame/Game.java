@@ -147,6 +147,7 @@ public class Game extends BaseAppState {
     protected void initialize(Application app) {
         System.out.println("Game: initialize");
         sapp = (SimpleApplication) app;
+        sapp.setPauseOnLostFocus(false);
     }
    
     @Override
@@ -164,7 +165,6 @@ public class Game extends BaseAppState {
             needCleaning = false;
             updateInfos.clear();
         }
-        
         
         this.running = false;
         diskStore = new ArrayList();
@@ -411,6 +411,10 @@ public class Game extends BaseAppState {
         return this.acceleration;
     }
     
+    public static void resetTimer() {
+        time = START_TIME;
+    }
+    
     private AnalogListener analogListener = new AnalogListener() {
         public void onAnalog(String name, float value, float tpf) {
             String sub = name.substring(0, 2);
@@ -455,8 +459,8 @@ public class Game extends BaseAppState {
                 info = updateInfos.get(d.getId());
                 //if(d.getId() == 16){
                   //  System.out.println("Update player 1");
-               // }
-
+                // }
+                
                 if(info.updatePosition()){
                     //System.out.println("Update Position");
                     d.setPosition(info.getPosition());
@@ -471,7 +475,6 @@ public class Game extends BaseAppState {
                 if(info.updateScore()){
                     d.setScore(info.getScore());
                 }
-                
                 //Move the disk
                 d.move(d.getVelocity().mult(tpf));
 

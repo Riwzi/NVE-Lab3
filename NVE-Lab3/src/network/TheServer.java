@@ -57,7 +57,8 @@ public class TheServer extends SimpleApplication {
     public static void main(String[] args) {
         System.out.println("Server initializing");
         Util.initialiseSerializables();
-        new TheServer(Util.PORT).start(JmeContext.Type.Headless);
+        //new TheServer(Util.PORT).start(JmeContext.Type.Headless);
+        new TheServer(Util.PORT).start();
     }
 
     public TheServer(int port) {
@@ -78,7 +79,7 @@ public class TheServer extends SimpleApplication {
     public void simpleInitApp() {
         // In a game server, the server builds and maintains a perfect 
         // copy of the game and makes use of that copy to make descisions 
-
+        
         try {
             System.out.println("Using port " + port);
             // create the server by opening a port
@@ -149,7 +150,7 @@ public class TheServer extends SimpleApplication {
                     return true;
                 }
             });
-            
+            game.startGame();
         } catch(InterruptedException ex) {
             Logger.getLogger(TheServer.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -268,11 +269,9 @@ public class TheServer extends SimpleApplication {
         @Override
         public void messageReceived(HostedConnection source, Message m) {
             if (m instanceof Util.MoveMessage) {
-                System.out.println("MoveMessage from client #" + source.getId());
                 final int connectionId = source.getId();
                 final Util.MoveMessage msg = ((Util.MoveMessage) m);
                 //final int direction = ((Util.MoveMessage) m).getDirection();
-                System.out.println(msg.getAcceleration());
                 
                 Future result = TheServer.this.enqueue(new Callable() {
                     @Override
