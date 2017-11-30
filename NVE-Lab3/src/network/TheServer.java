@@ -156,6 +156,7 @@ public class TheServer extends SimpleApplication {
                 }
             });
             game.startGame();
+            Game.resetTimer();
         } catch(InterruptedException ex) {
             Logger.getLogger(TheServer.class.getName()).log(Level.SEVERE, null, ex);
         }
