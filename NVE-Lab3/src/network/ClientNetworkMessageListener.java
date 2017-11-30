@@ -146,7 +146,15 @@ public class ClientNetworkMessageListener
             RemovePointMessage msg = (RemovePointMessage) m;
             InformationReceived info = updateInfos.get(msg.getDiskID());
             info.setRemoveDot();
+        }
+        else if(m instanceof DisksUpdateMessage){
+            DisksUpdateMessage msg = (DisksUpdateMessage) m;
 
+            for(DiskLite disk : msg.getDisks()){
+                InformationReceived info = updateInfos.get(disk.getID());
+                info.setPosition(msg.getMessageID(), disk.getPosition());
+                info.setVelocity(msg.getMessageID(), disk.getVelocity());              
+            }
 
         }
     }
