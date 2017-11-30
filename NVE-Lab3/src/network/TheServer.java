@@ -182,6 +182,7 @@ public class TheServer extends SimpleApplication {
                         @Override
                         public Object call() throws Exception {
                             Util.MyAbstractMessage msg = new Util.GameOverMessage(winners);
+                            msg.setReliable(true);
                             TheServer.this.server.broadcast(msg);
                             return true;
                         }
@@ -218,25 +219,14 @@ public class TheServer extends SimpleApplication {
                             if (disk.diskCollision(otherDisk, tpf)) {
                                 //If there was a collision between the 2 disks, queue update packages
                                 final Disk theOtherDisk = otherDisk;
-                                try {
-                                    outgoing.put(new Callable() {
-                                        @Override
-                                        public Object call() throws Exception {
-                                            Util.MyAbstractMessage msg = new Util.PositionAndVelocityChangeMessage(theDisk.getId(), theDisk.getPosition(), theDisk.getVelocity());
-                                            TheServer.this.server.broadcast(msg);
-                                            return true;
-                                        }
-                                    });
-                                    outgoing.put(new Callable() {
-                                        @Override
-                                        public Object call() throws Exception {
-                                            Util.MyAbstractMessage msg = new Util.PositionAndVelocityChangeMessage(theOtherDisk.getId(), theOtherDisk.getPosition(), theOtherDisk.getVelocity());
-                                            TheServer.this.server.broadcast(msg);
-                                            return true;
-                                        }
-                                    });
-                                } catch(InterruptedException ex) {
-                                    Logger.getLogger(TheServer.class.getName()).log(Level.SEVERE, null, ex);
+                                PositionAndVelocityMessage(theDisk.getId(), theDisk.getPosition(), theDisk.getVelocity());
+                                PositionAndVelocityMessage(theOtherDisk.getId(), theOtherDisk.getPosition(), theOtherDisk.getVelocity());
+                                
+                                if (theDisk instanceof Player) {
+                                    ScoreChangeMessage(theDisk.getId(), theDisk.getScore());
+                                }
+                                if (theOtherDisk instanceof Player) {
+                                    ScoreChangeMessage(theOtherDisk.getId(), theOtherDisk.getScore());
                                 }
                             }
                         }
@@ -249,6 +239,42 @@ public class TheServer extends SimpleApplication {
                 gameStart();
             }
             
+        }
+    }
+    
+    public void ScoreChangeMessage(int diskId, int diskScore) {
+        final int _diskId = diskId;
+        final int _diskScore = diskScore;
+        try {
+            outgoing.put(new Callable() {
+                @Override
+                public Object call() throws Exception {
+                    Util.MyAbstractMessage msg = new Util.ScoreChange(_diskId, _diskScore);
+                    msg.setReliable(true);
+                    TheServer.this.server.broadcast(msg);
+                    return true;
+                }
+            });
+        } catch (InterruptedException ex) {
+            Logger.getLogger(TheServer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public void PositionAndVelocityMessage(int diskId, Vector2f position, Vector2f velocity) {
+        final int _diskId = diskId;
+        final Vector2f _position = position;
+        final Vector2f _velocity = velocity;
+        try {
+            outgoing.put(new Callable() {
+                @Override
+                public Object call() throws Exception {
+                    Util.MyAbstractMessage msg = new Util.PositionAndVelocityChangeMessage(_diskId, _position, _velocity);
+                    TheServer.this.server.broadcast(msg);
+                    return true;
+                }
+            });
+        } catch (InterruptedException ex) {
+            Logger.getLogger(TheServer.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -280,30 +306,8 @@ public class TheServer extends SimpleApplication {
                         Player player = game.getPlayer(connPlayerMap.get(connectionId));
 
                         //Increase the velocity in the given direction
-//                        float velocityPerChange = game.getTpf()*game.getAcceleration();
-//                        player.addVelocity(new Vector2f(0, velocityPerChange*msg.getNbUp()));
-//                        player.addVelocity(new Vector2f(0, -velocityPerChange*msg.getNbDown()));
-//                        player.addVelocity(new Vector2f(velocityPerChange*msg.getNbRight(), 0));
-//                        player.addVelocity(new Vector2f(-velocityPerChange*msg.getNbLeft(), 0));
                         player.addVelocity(msg.getAcceleration());
                         return true;
-                        /*
-                        Vector2f velocity;
-                        switch (direction) {
-                            case 0: velocity = new Vector2f(0, game.getTpf()*game.getAcceleration());
-                                    break;
-                            case 1: velocity = new Vector2f(0, -game.getTpf()*game.getAcceleration());
-                                    break;
-                            case 2: velocity = new Vector2f(game.getTpf()*game.getAcceleration(), 0);
-                                    break;
-                            case 3: velocity = new Vector2f(-game.getTpf()*game.getAcceleration(), 0);
-                                    break;
-                            default: velocity = new Vector2f(0, 0);
-                                    break;
-                        }
-                        player.addVelocity(velocity);
-                        return true;
-                        */
                     }
                 });
                 
@@ -355,15 +359,6 @@ public class TheServer extends SimpleApplication {
                 if (!assigned) {
                     throw new RuntimeException("No playerID was available even though there should be at least one");
                 }
-                //Add player to game
-                Future result = TheServer.this.enqueue(new Callable() {
-                    @Override
-                    public Object call() {
-                        // Need method from game
-                        // Add player to a list that will be initialized when the game starts, can't just add a player from here since positions need to be randomized
-                        return true;
-                    }
-                });
             }
         }
         @Override
@@ -372,7 +367,6 @@ public class TheServer extends SimpleApplication {
             System.out.println("Client #"+c.getId() + " has disconnected from the server");
             
             //This removes the player from the list of used playerIDs
-            //System.out.println("GET "+TheServer.this.connPlayerMap.get(c.getId()));
             if (TheServer.this.connPlayerMap.get(c.getId()) != null) {
                 
                 Future result = TheServer.this.enqueue(new Callable() {

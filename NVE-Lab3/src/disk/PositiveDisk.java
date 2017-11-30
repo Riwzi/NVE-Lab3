@@ -28,14 +28,18 @@ public class PositiveDisk extends Disk {
             int reward = this.value;
             if (this.value >= 1) {
                 this.value -= 1;
-                Spatial marker = this.getChild("Marker");
-                if (marker != null) {
-                    this.detachChild(marker);
-                }
+                removeMarker();
             }
             return reward;
         } else {
             return 0;
+        }
+    }
+    
+    public void removeMarker() {
+        Spatial marker = this.getChild("Marker");
+        if (marker != null) {
+            this.detachChild(marker);
         }
     }
 }
