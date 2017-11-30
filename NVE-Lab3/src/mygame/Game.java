@@ -457,7 +457,7 @@ public class Game extends BaseAppState {
             time += tpf;
             info = updateInfos.get(TIMEINDEX);
             if(info.updateTime()){
-                time = info.getTime();
+                time = START_TIME - info.getTime();
             }
             String text = "Time: " + getRemainingTime() + "\n";
 
@@ -723,13 +723,14 @@ public class Game extends BaseAppState {
         time = START_TIME;
         String text = hudText.getText();
         String[] split = text.split("\n");
-        split[0] = "Time: 0";
+        split[0] = "Time: 0:0";
         text = new String();
         for (String str : split){
-            text += str;
+            text += str + "\n";
         }
         for (Integer integ : winners){
             text += "Player " + integ + " wins ! \n";
-        }        
+        }
+        hudText.setText(text);
     }
 }
