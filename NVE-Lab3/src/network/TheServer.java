@@ -162,6 +162,7 @@ public class TheServer extends SimpleApplication {
     public void simpleUpdate(float tpf) {
         if (game.isEnabled()) {
             if (Game.getRemainingTime() <= 0) {
+                game.resetIDs();
                 game.setEnabled(false);
                 ask.setEnabled(true);
                 this.countdownRemaining = this.countdown;
