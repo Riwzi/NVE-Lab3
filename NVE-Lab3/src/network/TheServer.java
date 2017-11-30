@@ -166,16 +166,17 @@ public class TheServer extends SimpleApplication {
                 this.countdownRemaining = this.countdown;
                 final ArrayList<Integer> winners = new ArrayList();
                 int highestScore = 0;
-                for (int i = 0; i < connPlayerMap.size()-1; i++) {
+                for (int i = 0; i < connPlayerMap.size(); i++) {
                     Disk player = game.getPlayer(connPlayerMap.get(i));
                     if (player.getScore() > highestScore || highestScore == 0) {
                         highestScore = player.getScore();
                     }
                 }
-                for (int i = 0; i < connPlayerMap.size()-1; i++) {
-                    Disk player = game.getPlayer(connPlayerMap.get(i));
+                for (int i = 0; i < connPlayerMap.size(); i++) {
+                    int playerID = connPlayerMap.get(i);
+                    Player player = game.getPlayer(playerID);
                     if (player.getScore() == highestScore) {
-                        winners.add(player.getId());
+                        winners.add(playerID);
                     }
                 }
                 try {
