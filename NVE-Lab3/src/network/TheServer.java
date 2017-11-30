@@ -179,6 +179,7 @@ public class TheServer extends SimpleApplication {
                 Enumeration<Integer> values = this.connPlayerMap.values();
                 while (values.hasMoreElements()){
                     int playerID = values.nextElement();
+                    System.out.println("Player: "+playerID);
                     Disk player = game.getPlayer(playerID);
                     if (player.getScore() > highestScore || highestScore == 0) {
                         highestScore = player.getScore();
