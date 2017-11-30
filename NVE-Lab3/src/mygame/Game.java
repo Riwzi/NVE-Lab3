@@ -168,6 +168,7 @@ public class Game extends BaseAppState {
         
         this.running = false;
         diskStore = new ArrayList();
+        this.nextID = 0;
         //Set up HUD
         initHud();
         //Set up camera
