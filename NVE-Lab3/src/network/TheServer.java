@@ -423,7 +423,11 @@ public class TheServer extends SimpleApplication {
             System.out.println("Client #"+c.getId() + " has disconnected from the server");
             //This removes the player from the list of used playerIDs
             if (TheServer.this.connPlayerMap.get(c.getId()) != null) {
+                System.out.println("I removed it");
+                System.out.println(TheServer.this.connPlayerMap.size());
                 TheServer.this.connPlayerMap.remove(c.getId());
+                System.out.println(TheServer.this.connPlayerMap.size());
+
             }
         }
     }

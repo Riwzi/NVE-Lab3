@@ -52,7 +52,7 @@ public class ClientNetworkMessageListener
         // solution; better would be to code behavour in the message 
         // classes and call them on the message
         
-        System.out.println(((MyAbstractMessage)m).messageID);
+        //System.out.println(((MyAbstractMessage)m).messageID);
         
         if (m instanceof Util.GameStartMessage) {
             
