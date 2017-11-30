@@ -182,6 +182,7 @@ public class TheServer extends SimpleApplication {
                         @Override
                         public Object call() throws Exception {
                             Util.MyAbstractMessage msg = new Util.GameOverMessage(winners);
+                            msg.setReliable(true);
                             TheServer.this.server.broadcast(msg);
                             return true;
                         }
