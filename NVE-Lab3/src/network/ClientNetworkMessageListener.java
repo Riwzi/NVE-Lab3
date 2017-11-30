@@ -149,7 +149,6 @@ public class ClientNetworkMessageListener
         }
         else if(m instanceof DisksUpdateMessage){
             DisksUpdateMessage msg = (DisksUpdateMessage) m;
-
             for(DiskLite disk : msg.getDisks()){
                 InformationReceived info = updateInfos.get(disk.getID());
                 info.setPosition(msg.getMessageID(), disk.getPosition());
