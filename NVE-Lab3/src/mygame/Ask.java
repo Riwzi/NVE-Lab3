@@ -33,7 +33,7 @@ public class Ask extends BaseAppState {
         BitmapText hudText = new BitmapText(myFont, false);
         hudText.setSize(myFont.getCharSet().getRenderedSize() * 3);
         hudText.setColor(ColorRGBA.White);
-        hudText.setText("PRESS P TO START A NEW GAME AND\nE TO EXIT");
+        hudText.setText("NEW GAME WILL START SOON\nPRESS E TO EXIT");
         hudText.setLocalTranslation(60, hudText.getLineHeight()*10, 0);
         sapp.getGuiNode().attachChild(hudText);
     }

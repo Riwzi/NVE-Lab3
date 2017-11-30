@@ -115,9 +115,7 @@ public class TheClient extends SimpleApplication implements ClientStateListener{
             if (isPressed) {
                 if (name.equals("Exit")) {
                     TheClient.this.stop();
-                } else if (name.equals("Restart")) {
-                    createGame();
-                }
+                } 
             }
         }
     };
@@ -172,7 +170,6 @@ public class TheClient extends SimpleApplication implements ClientStateListener{
     
     public void gameOver(ArrayList<Integer> winners){
         game.setWinner(winners);
-        running = false;
     }
     
     @Override

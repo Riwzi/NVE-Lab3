@@ -710,11 +710,12 @@ public class Game extends BaseAppState {
 
     public void setWinner(ArrayList<Integer> winners) {
         running = false;
+        time = START_TIME;
         String text = "Time: 0\n";
         for (Integer integ : winners){
             text += "Player " + integ + " wins ! \n";
         }
-
+        
         hudText.setText(text);
     }
 }
