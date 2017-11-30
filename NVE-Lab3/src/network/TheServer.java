@@ -147,6 +147,7 @@ public class TheServer extends SimpleApplication {
                     }
                 });
             }
+            System.out.println("TIME BEFORE "+Game.getRemainingTime());
             Thread.sleep(delayUntilStart);
             outgoing.put(new Callable() {
                 @Override
@@ -158,7 +159,7 @@ public class TheServer extends SimpleApplication {
                 }
             });
             game.startGame();
-            Game.resetTimer();
+            Game.increaseGameLength(delayUntilStart/1000);
         } catch(InterruptedException ex) {
             Logger.getLogger(TheServer.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -166,7 +167,6 @@ public class TheServer extends SimpleApplication {
 
     @Override
     public void simpleUpdate(float tpf) {
-        
         if (game.isEnabled()) {
             if (Game.getRemainingTime() <= 0) {
                 

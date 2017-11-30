@@ -128,7 +128,7 @@ public class Game extends BaseAppState {
     
     private int nextID = 0;
     
-    private static final float START_TIME = 30f;
+    private static float START_TIME;
     private static float time = 0;
     private float currentTpf;
     private BitmapText hudText;
@@ -169,6 +169,7 @@ public class Game extends BaseAppState {
         this.running = false;
         diskStore = new ArrayList();
         this.nextID = 0;
+        this.START_TIME = 30f;
         //Set up HUD
         initHud();
         //Set up camera
@@ -412,12 +413,12 @@ public class Game extends BaseAppState {
         return this.acceleration;
     }
     
-    public static void resetTimer() {
-        time = START_TIME;
-    }
-    
     public void resetIDs() {
         this.nextID = 0;
+    }
+    
+    public static void increaseGameLength(float timeToAdd) {
+        START_TIME += timeToAdd;
     }
     
     private AnalogListener analogListener = new AnalogListener() {
