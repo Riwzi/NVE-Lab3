@@ -176,14 +176,17 @@ public class TheServer extends SimpleApplication {
                 this.countdownRemaining = this.countdown;
                 winners.clear();
                 int highestScore = 0;
-                for (int i = 0; i < connPlayerMap.size(); i++) {
-                    Disk player = game.getPlayer(connPlayerMap.get(i));
+                Enumeration<Integer> values = this.connPlayerMap.values();
+                while (values.hasMoreElements()){
+                    int playerID = values.nextElement();
+                    Disk player = game.getPlayer(playerID);
                     if (player.getScore() > highestScore || highestScore == 0) {
                         highestScore = player.getScore();
                     }
                 }
-                for (int i = 0; i < connPlayerMap.size(); i++) {
-                    int playerID = connPlayerMap.get(i);
+                values = this.connPlayerMap.values();
+                while (values.hasMoreElements()){
+                    int playerID = values.nextElement();
                     Player player = game.getPlayer(playerID);
                     if (player.getScore() == highestScore) {
                         winners.add(playerID);
@@ -492,6 +495,10 @@ public class TheServer extends SimpleApplication {
         
         public Enumeration<K> keys() {
             return map.keys();
+        }
+        
+        public int mappingCount() {
+            return (int)map.mappingCount();
         }
     }
 }
