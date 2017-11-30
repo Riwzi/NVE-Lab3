@@ -28,6 +28,7 @@ public class Util {
             ScoreChange.class,
             PositionsUpdateMessage.class,
             ScoreUpdateMessage.class,
+            RemovePointMessage.class,
             MoveMessage.class,
             TimeUpdateMessage.class,
             PlayerLight.class);
@@ -283,6 +284,22 @@ public class Util {
         
         public int getNewScore() {
             return newScore;
+        }
+    }
+    
+    @Serializable
+    public static class RemovePointMessage extends MyAbstractMessage {
+        private int diskID;
+        
+        public RemovePointMessage() {
+        }
+        
+        public RemovePointMessage(int diskID) {
+            this.diskID = diskID;
+        }
+        
+        public int getDiskID() {
+            return diskID;
         }
     }
     
