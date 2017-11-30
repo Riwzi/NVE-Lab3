@@ -139,6 +139,13 @@ public class ClientNetworkMessageListener
                 }
             });
         }
+        else if(m instanceof RemovePointMessage){
+            RemovePointMessage msg = (RemovePointMessage) m;
+            InformationReceived info = updateInfos.get(msg.getDiskID());
+            info.setRemoveDot();
+
+
+        }
     }
 
 }

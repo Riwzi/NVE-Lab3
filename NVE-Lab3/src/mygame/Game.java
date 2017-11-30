@@ -475,6 +475,12 @@ public class Game extends BaseAppState {
                 if(info.updateScore()){
                     d.setScore(info.getScore());
                 }
+                
+                if(info.needToRemove()){
+                    for(int i = 0 ; i < info.getNbOfDotsToRemove() ; i++){
+                        ((PositiveDisk)d).removeMarker();
+                    }
+                }
                 //Move the disk
                 d.move(d.getVelocity().mult(tpf));
 
