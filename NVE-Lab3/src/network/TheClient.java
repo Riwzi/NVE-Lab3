@@ -91,7 +91,7 @@ public class TheClient extends SimpleApplication implements ClientStateListener{
                 PositionChangeMessage.class,
                 PositionAndVelocityChangeMessage.class,
                 ScoreChange.class,
-                PositionsUpdateMessage.class,
+                DisksUpdateMessage.class,
                 ScoreUpdateMessage.class,
                 MoveMessage.class,
                 RemovePointMessage.class,
