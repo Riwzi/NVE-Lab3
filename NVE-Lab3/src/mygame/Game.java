@@ -455,6 +455,10 @@ public class Game extends BaseAppState {
         if(running){
             this.currentTpf = tpf;
             time += tpf;
+            info = updateInfos.get(TIMEINDEX);
+            if(info.updateTime()){
+                time = info.getTime();
+            }
             String text = "Time: " + getRemainingTime() + "\n";
 
             //TODO Apply changes for data
@@ -486,6 +490,7 @@ public class Game extends BaseAppState {
                         ((PositiveDisk)d).removeMarker();
                     }
                 }
+                
                 //Move the disk
                 d.move(d.getVelocity().mult(tpf));
 
@@ -716,11 +721,15 @@ public class Game extends BaseAppState {
     public void setWinner(ArrayList<Integer> winners) {
         running = false;
         time = START_TIME;
-        String text = "Time: 0\n";
+        String text = hudText.getText();
+        String[] split = text.split("\n");
+        split[0] = "Time: 0";
+        text = new String();
+        for (String str : split){
+            text += str;
+        }
         for (Integer integ : winners){
             text += "Player " + integ + " wins ! \n";
-        }
-        
-        hudText.setText(text);
+        }        
     }
 }
