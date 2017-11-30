@@ -63,8 +63,8 @@ public class TheServer extends SimpleApplication {
     public static void main(String[] args) {
         System.out.println("Server initializing");
         Util.initialiseSerializables();
-        //new TheServer(Util.PORT).start(JmeContext.Type.Headless);
-        new TheServer(Util.PORT).start();
+        new TheServer(Util.PORT).start(JmeContext.Type.Headless);
+        //new TheServer(Util.PORT).start();
     }
 
     public TheServer(int port) {
