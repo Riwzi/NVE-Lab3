@@ -458,12 +458,12 @@ public class Game extends BaseAppState {
                // }
 
                 if(info.updatePosition()){
-                    System.out.println("Update Position");
+                    //System.out.println("Update Position");
                     d.setPosition(info.getPosition());
                 }
                 
                 if(info.updateVelocity()){
-                    System.out.println("Update Velocity");
+                    //System.out.println("Update Velocity");
 
                     d.setVelocity(info.getVelocity());
                 }
