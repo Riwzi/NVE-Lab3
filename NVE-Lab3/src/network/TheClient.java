@@ -170,7 +170,6 @@ public class TheClient extends SimpleApplication implements ClientStateListener{
     }
     
     public void gameOver(ArrayList<Integer> winners){
-        this.running = false;
         game.setWinner(winners);
     }
     
