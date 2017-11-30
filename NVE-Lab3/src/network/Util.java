@@ -26,12 +26,13 @@ public class Util {
             PositionChangeMessage.class,
             PositionAndVelocityChangeMessage.class,
             ScoreChange.class,
-            PositionsUpdateMessage.class,
+            DisksUpdateMessage.class,
             ScoreUpdateMessage.class,
             RemovePointMessage.class,
             MoveMessage.class,
             TimeUpdateMessage.class,
-            PlayerLight.class);
+            PlayerLight.class,
+            DiskLite.class);
     }
     
     abstract public static class MyAbstractMessage extends AbstractMessage {
@@ -95,6 +96,33 @@ public class Util {
         
         public int getScore() {
             return score;
+        }
+    }
+    
+    @Serializable
+    public static class DiskLite {
+        private int diskID;
+        private Vector2f position;
+        private Vector2f velocity;
+        
+        public DiskLite() {
+        }
+        
+        public DiskLite(int diskID, Vector2f position) {
+            this.diskID = diskID;
+            this.position = position;
+        }
+        
+        public int getID() {
+            return diskID;
+        }
+        
+        public Vector2f getPosition() {
+            return position;
+        }
+        
+        public Vector2f getVelocity() {
+            return velocity;
         }
     }
     
@@ -304,22 +332,21 @@ public class Util {
     }
     
     /*
-    * Use this for periodic updates of player positions
-    * These period updates currently send a PlayerLight object (might change)
+    * Use this for periodic updates of disk positions
     */
     @Serializable
-    public static class PositionsUpdateMessage extends MyAbstractMessage {
-        private ArrayList<PlayerLight> players;
+    public static class DisksUpdateMessage extends MyAbstractMessage {
+        private ArrayList<DiskLite> disks;
         
-        public PositionsUpdateMessage() {
+        public DisksUpdateMessage() {
         }
         
-        public PositionsUpdateMessage(ArrayList<PlayerLight> players) {
-            this.players = players;
+        public DisksUpdateMessage(ArrayList<DiskLite> disks) {
+            this.disks = disks;
         }
         
-        public ArrayList<PlayerLight> getPlayers() {
-            return players;
+        public ArrayList<DiskLite> getDisks() {
+            return disks;
         }
     }
     
