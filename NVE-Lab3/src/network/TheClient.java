@@ -38,6 +38,7 @@ public class TheClient extends SimpleApplication implements ClientStateListener{
     private boolean running = true;
     private ClientNetworkMessageListener clientListener;
     private ClientSender clientSender;
+    private boolean needCreateGame = false;
     
     // the connection back to the server
     private Client serverConnection;
@@ -131,6 +132,7 @@ public class TheClient extends SimpleApplication implements ClientStateListener{
                 this.running = false;
             }
         }
+        
     }
     
     // takes down all communication channels gracefully, when called
@@ -145,15 +147,20 @@ public class TheClient extends SimpleApplication implements ClientStateListener{
         game.setEnabled(true);
         inputManager.deleteMapping("Restart");
         inputManager.deleteMapping("Exit");
+        needCreateGame = true;
         
     }
     
     public void startGame(){
+        
         game.startGame();
         running = true;
     }
     
     public void putConfig(int userID ,ArrayList<PlayerLight> playersList){
+        if(needCreateGame)
+            createGame();
+        
         for (PlayerLight player : playersList){
             if(player.getID() != userID)
                 game.addPlayer(player.getID(), player.getName(), player.getPosition());
@@ -163,13 +170,17 @@ public class TheClient extends SimpleApplication implements ClientStateListener{
     }
     
     public void addAskInputs(){
-        inputManager.addMapping("Restart", new KeyTrigger(KeyInput.KEY_P));
         inputManager.addMapping("Exit", new KeyTrigger(KeyInput.KEY_E));
         inputManager.addListener(actionListener, "Restart", "Exit");
     }
     
     public void gameOver(ArrayList<Integer> winners){
         game.setWinner(winners);
+        game.setEnabled(false);
+        addAskInputs();
+        ask.setEnabled(true);
+        time = 0f;
+        this.running = false;
     }
     
     @Override

@@ -97,6 +97,8 @@ public class ClientNetworkMessageListener
         }
         else if(m instanceof PositionAndVelocityChangeMessage){
             PositionAndVelocityChangeMessage msg = (PositionAndVelocityChangeMessage) m;
+            //System.out.println("disk ID: " + msg.getDiskID());
+           // System.out.println(updateInfos);
             InformationReceived info = updateInfos.get(msg.getDiskID());
             info.setPosition(msg.getMessageID(), msg.getNewPosition());
             info.setVelocity(msg.getMessageID(), msg.getNewVelocity());
