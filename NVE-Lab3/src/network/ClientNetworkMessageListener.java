@@ -133,6 +133,7 @@ public class ClientNetworkMessageListener
             Future result = theClient.enqueue(new Callable() {
                 @Override
                 public Object call() throws Exception {
+                    System.out.println("GameOver");
                     theClient.gameOver(msg.getWinners());
                     return true;
                 }
