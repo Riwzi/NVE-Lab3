@@ -67,7 +67,6 @@ public class TheClient extends SimpleApplication implements ClientStateListener{
     public void simpleInitApp() {
         setDisplayStatView(false);
         setDisplayFps(false);
-        
         try {
             //Initialize the queue to use to send informations
             LinkedBlockingQueue<PlayerInput> requestToSend = new LinkedBlockingQueue<>();
@@ -152,7 +151,6 @@ public class TheClient extends SimpleApplication implements ClientStateListener{
     }
     
     public void startGame(){
-        
         game.startGame();
         running = true;
     }
@@ -161,11 +159,12 @@ public class TheClient extends SimpleApplication implements ClientStateListener{
         if(needCreateGame)
             createGame();
         
-        for (PlayerLight player : playersList){
-            if(player.getID() != userID)
+        for (final PlayerLight player : playersList){
+            if(player.getID() != userID) {
                 game.addPlayer(player.getID(), player.getName(), player.getPosition());
-            else
+            } else {
                 game.addLocalPlayer(player.getID(), player.getName(), player.getPosition());
+            }  
         }
     }
     
@@ -186,13 +185,19 @@ public class TheClient extends SimpleApplication implements ClientStateListener{
     @Override
     public void clientConnected(Client c) {
         System.out.println("Client connected succesfully !");
-        createGame();
+        TheClient.this.enqueue(new Callable() {
+            @Override
+            public Object call() {
+                TheClient.this.createGame();
+                return true;
+            }
+        });
     }
     
 
     @Override
     public void clientDisconnected(Client c, DisconnectInfo info) {
-        System.out.println(info);
+        System.out.println("DisconnectInfo "+ info);
         System.exit(0);
     }
 

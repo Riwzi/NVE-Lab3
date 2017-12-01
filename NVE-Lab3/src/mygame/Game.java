@@ -181,7 +181,6 @@ public class Game extends BaseAppState {
         //Set up disks
         initDisks();
         updateInfos.put(TIMEINDEX, new InformationReceived());
-        
         addWatingToStart();
     }
     
@@ -454,7 +453,7 @@ public class Game extends BaseAppState {
         InformationReceived info;
 
         if(running){
-            //sapp.getGuiNode().detachChild(hudText_bis);
+            sapp.getGuiNode().detachChild(hudText_bis);
             this.currentTpf = tpf;
             time += tpf;
             info = updateInfos.get(TIMEINDEX);
@@ -695,17 +694,17 @@ public class Game extends BaseAppState {
     
     protected void addWatingToStart(){
         BitmapFont myFont = sapp.getAssetManager().loadFont("Interface/Fonts/Console.fnt");
-//        hudText_bis = new BitmapText(myFont, false);
-//        hudText_bis.setSize(myFont.getCharSet().getRenderedSize() * 3);
-//        hudText_bis.setColor(ColorRGBA.White);
-//        hudText_bis.setText("GAME IS GOING TO START");
-//        hudText_bis.setLocalTranslation(40, hudText_bis.getLineHeight()*10, 0);
-//        sapp.getGuiNode().attachChild(hudText_bis);
+        hudText_bis = new BitmapText(myFont, false);
+        hudText_bis.setSize(myFont.getCharSet().getRenderedSize() * 3);
+        hudText_bis.setColor(ColorRGBA.White);
+        hudText_bis.setText("GAME IS GOING TO START");
+        hudText_bis.setLocalTranslation(40, hudText_bis.getLineHeight()*10, 0);
+        sapp.getGuiNode().attachChild(hudText_bis);
         System.out.println("Game starting soon");
     }
     
     public void startGame(){
-        //sapp.getGuiNode().detachChild(hudText_bis);
+        sapp.getGuiNode().detachChild(hudText_bis);
         running = true;
     }
     
