@@ -52,7 +52,7 @@ public class TheServer extends SimpleApplication {
     
     private Ask ask = new Ask();
     private Game game = new Game(); //Modify game to take the outgoing/incoming queues as arguments, or do i just send incoming as enqueued Callables?
-    private float countdown = 12f;
+    private float countdown = 25f;
     private float countdownRemaining = 0f;
     private long delayUntilStart = 2000; //ms
     private final ArrayList<Integer> winners;
