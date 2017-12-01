@@ -115,7 +115,7 @@ public class Game extends BaseAppState {
     };
     
     private static final int[][] KEY_BINDINGS = new int[][] {
-        {KeyInput.KEY_Q, KeyInput.KEY_S, KeyInput.KEY_D, KeyInput.KEY_Z},
+        {KeyInput.KEY_A, KeyInput.KEY_S, KeyInput.KEY_D, KeyInput.KEY_W},
         {KeyInput.KEY_G, KeyInput.KEY_H, KeyInput.KEY_J, KeyInput.KEY_Y},
         {KeyInput.KEY_LEFT, KeyInput.KEY_DOWN, KeyInput.KEY_RIGHT, KeyInput.KEY_UP}
     };
@@ -454,6 +454,7 @@ public class Game extends BaseAppState {
         InformationReceived info;
 
         if(running){
+            sapp.getGuiNode().detachChild(hudText_bis);
             this.currentTpf = tpf;
             time += tpf;
             info = updateInfos.get(TIMEINDEX);
@@ -703,7 +704,7 @@ public class Game extends BaseAppState {
     }
     
     public void startGame(){
-        sapp.getGuiNode().detachChild(hudText_bis);
+        //sapp.getGuiNode().detachChild(hudText_bis);
         running = true;
     }
     
