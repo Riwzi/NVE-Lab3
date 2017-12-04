@@ -120,11 +120,12 @@ public class Game extends BaseAppState {
         {KeyInput.KEY_LEFT, KeyInput.KEY_DOWN, KeyInput.KEY_RIGHT, KeyInput.KEY_UP}
     };
     
+    private float PREDICTION_CONST = 0.5f;
     
     public static final int TIMEINDEX = -1;
     
     private final float acceleration = 150f;
-    private final float friction = 4f;
+    private final float friction = 1f;
     
     private int nextID = 0;
     
@@ -264,7 +265,10 @@ public class Game extends BaseAppState {
     // Adds a negative disk to the game at the given position
     private void addNegative(Vector2f position, Vector2f velocity) {
         NegativeDisk negative = new NegativeDisk(sapp.getAssetManager(), NEGDISK_R, getNextID(), INITIAL_NEGATIVE);
-        updateInfos.put(negative.getId(), new InformationReceived());
+        InformationReceived info = new InformationReceived(position);
+        info.updatePositionPrediction(position);
+        System.out.println("IN addNegative: "+info.getPosition());
+        updateInfos.put(negative.getId(), info);
 
         Geometry negativeGeometry = negative.createGeometry(NEGDISK_R, FRAME_THICKNESS);
         sapp.getRootNode().attachChild(negative);
@@ -280,7 +284,9 @@ public class Game extends BaseAppState {
     // Adds a positive disk to the game at the given position
     private void addPositive(Vector2f position, Vector2f velocity) {
         PositiveDisk positive = new PositiveDisk(sapp.getAssetManager(), POSDISK_R, getNextID(), INITIAL_POSITIVE);
-        updateInfos.put(positive.getId(), new InformationReceived());
+        InformationReceived info = new InformationReceived(position);
+        info.updatePositionPrediction(position);
+        updateInfos.put(positive.getId(), info);
 
         Geometry positiveGeometry = positive.createGeometry(POSDISK_R, FRAME_THICKNESS);
         sapp.getRootNode().attachChild(positive);
@@ -327,7 +333,9 @@ public class Game extends BaseAppState {
         this.userID = player_id;
         String name = playerName.get(player_name_id);
         Player player = new Player(sapp.getAssetManager(), PLAYER_R, player_id, name);
-        updateInfos.put(player.getId(), new InformationReceived());
+        InformationReceived info = new InformationReceived(position);
+        info.updatePositionPrediction(position);
+        updateInfos.put(player.getId(), info);
 
         Geometry playerGeometry = player.createGeometry(PLAYER_R, FRAME_THICKNESS, ColorRGBA.Blue);
         sapp.getRootNode().attachChild(player);
@@ -360,7 +368,9 @@ public class Game extends BaseAppState {
     public void addPlayer(int player_id, int player_name_id, Vector2f position) {
         String name = playerName.get(player_name_id);
         Player player = new Player(sapp.getAssetManager(), PLAYER_R, player_id, name);
-        updateInfos.put(player.getId(), new InformationReceived());
+        InformationReceived info = new InformationReceived(position);
+        info.updatePositionPrediction(position);
+        updateInfos.put(player.getId(), info);
 
         Geometry playerGeometry = player.createGeometry(PLAYER_R, FRAME_THICKNESS, ColorRGBA.Black);
         sapp.getRootNode().attachChild(player);
@@ -420,6 +430,10 @@ public class Game extends BaseAppState {
         START_TIME += timeToAdd;
     }
     
+    public void setPrediction(float prediction) {
+        PREDICTION_CONST = prediction;
+    }
+    
     private AnalogListener analogListener = new AnalogListener() {
         public void onAnalog(String name, float value, float tpf) {
             String sub = name.substring(0, 2);
@@ -462,27 +476,24 @@ public class Game extends BaseAppState {
             }
             String text = "Time: " + getRemainingTime() + "\n";
 
-            //TODO Apply changes for data
-
-
             for (Disk d: diskStore) {
                 info = updateInfos.get(d.getId());
-                //if(d.getId() == 16){
-                  //  System.out.println("Update player 1");
-                // }
-                
-                if(info.updatePosition()){
-                    //System.out.println("Update Position");
-                    d.setPosition(info.getPosition());
-                }
-                
-                if(info.updateVelocity()){
-                    //System.out.println("Update Velocity");
+                // Move towards the predicted values
+                Vector2f current_pos = d.getPosition();
+                Vector2f predicted_pos = info.getPosition().subtract(d.getPosition());
+                d.setPosition(current_pos.add(predicted_pos.mult(PREDICTION_CONST)));
+                System.out.println("DISK");
+                System.out.println("currentpos: "+current_pos);
+                System.out.println("predictedpos: "+predicted_pos);
+                System.out.println("infopos: "+info.getPosition());
+                Vector2f current_vel = d.getVelocity();
+                Vector2f predicted_vel = info.getVelocity().subtract(d.getVelocity());
+                d.setVelocity(current_vel.add(predicted_vel.mult(PREDICTION_CONST)));
+                System.out.println("currentvel: "+current_vel);
+                System.out.println("predictedvel: "+predicted_vel);
+                System.out.println("infovel: "+info.getVelocity());
 
-                    d.setVelocity(info.getVelocity());
-                }
-                
-                if(info.updateScore()){
+                if (info.updateScore()) {
                     d.setScore(info.getScore());
                 }
                 
@@ -491,13 +502,10 @@ public class Game extends BaseAppState {
                         ((PositiveDisk)d).removeMarker();
                     }
                 }
-                
-                //Move the disk
-                d.move(d.getVelocity().mult(tpf));
 
                 //Apply friction
                 float friction_tpf = friction * tpf;
-                Vector2f velocity = d.getVelocity();
+                Vector2f velocity = info.getVelocity();
                 float newX;
                 float newY;
                 float oldX = velocity.getX();
@@ -516,7 +524,8 @@ public class Game extends BaseAppState {
                 } else {
                     newY = 0;
                 }
-                d.setVelocity(new Vector2f(newX, newY));
+                info.updateVelocityPrediction(new Vector2f(newX, newY));
+                info.updatePositionPrediction(info.getVelocity().mult(tpf));
 
                /* //Collision detection with frame
                 float boundary = FREE_AREA_WIDTH/2;
@@ -717,7 +726,7 @@ public class Game extends BaseAppState {
     }
     
     public ConcurrentHashMap< Integer, InformationReceived > getUpdateInfo(){
-        return  this.updateInfos;
+        return this.updateInfos;
     }
 
     public void setWinner(ArrayList<Integer> winners) {
