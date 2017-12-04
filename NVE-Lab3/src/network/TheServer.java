@@ -79,6 +79,7 @@ public class TheServer extends SimpleApplication {
         game.setEnabled(false);
         stateManager.attach(game);
         stateManager.attach(ask);
+        game.setPrediction(1);
         winners = new ArrayList<>();
         
         this.countdownRemaining = this.countdown;
@@ -160,7 +161,6 @@ public class TheServer extends SimpleApplication {
                     return true;
                 }
             });
-            game.setPrediction(1f);
             game.startGame();
             isListening = true;
             Game.increaseGameLength(delayUntilStart/1000);
