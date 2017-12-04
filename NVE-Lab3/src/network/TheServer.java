@@ -210,7 +210,7 @@ public class TheServer extends SimpleApplication {
 
             } else {
                 SendTimeMessage(tpf);
-                PositionsUpdateMessage(tpf);
+                SendPositionsUpdateMessage(tpf);
                 ArrayList<Disk> diskStore = game.getDisks();
                 for (Disk disk: diskStore) {
                     //Collision detection with frame
@@ -238,20 +238,20 @@ public class TheServer extends SimpleApplication {
                             if (disk.diskCollision(otherDisk, tpf)) {
                                 //If there was a collision between the 2 disks, queue update packages
                                 final Disk theOtherDisk = otherDisk;
-                                PositionAndVelocityMessage(theDisk.getId(), theDisk.getPosition(), theDisk.getVelocity());
-                                PositionAndVelocityMessage(theOtherDisk.getId(), theOtherDisk.getPosition(), theOtherDisk.getVelocity());
+                                SendPositionAndVelocityMessage(theDisk.getId(), theDisk.getPosition(), theDisk.getVelocity());
+                                SendPositionAndVelocityMessage(theOtherDisk.getId(), theOtherDisk.getPosition(), theOtherDisk.getVelocity());
                                 
                                 if (theDisk instanceof Player) {
-                                    ScoreChangeMessage(theDisk.getId(), theDisk.getScore());
+                                    SendScoreChangeMessage(theDisk.getId(), theDisk.getScore());
                                 }
                                 if (theOtherDisk instanceof Player) {
-                                    ScoreChangeMessage(theOtherDisk.getId(), theOtherDisk.getScore());
+                                    SendScoreChangeMessage(theOtherDisk.getId(), theOtherDisk.getScore());
                                 }
                                 if (theDisk instanceof PositiveDisk && theOtherDisk instanceof Player) {
-                                    RemovePointMessage(theDisk.getId());
+                                    SendRemovePointMessage(theDisk.getId());
                                 }
                                 if (theOtherDisk instanceof PositiveDisk && theDisk instanceof Player) {
-                                    RemovePointMessage(theOtherDisk.getId());
+                                    SendRemovePointMessage(theOtherDisk.getId());
                                 }
                             }
                         }
@@ -287,7 +287,7 @@ public class TheServer extends SimpleApplication {
          }
     }
     
-    public void PositionsUpdateMessage(float tpf) {
+    public void SendPositionsUpdateMessage(float tpf) {
         TheServer.time_since_last_position_update += tpf;
         if (time_since_last_position_update >= 1/TheServer.SERVER_POSITION_SEND_RATE); {
             TheServer.time_since_last_position_update = 0f;
@@ -311,7 +311,7 @@ public class TheServer extends SimpleApplication {
          }
     }
     
-    public void ScoreChangeMessage(int diskId, int diskScore) {
+    public void SendScoreChangeMessage(int diskId, int diskScore) {
         final int _diskId = diskId;
         final int _diskScore = diskScore;
         try {
@@ -329,7 +329,7 @@ public class TheServer extends SimpleApplication {
         }
     }
 
-    public void PositionAndVelocityMessage(int diskId, Vector2f position, Vector2f velocity) {
+    public void SendPositionAndVelocityMessage(int diskId, Vector2f position, Vector2f velocity) {
         final int _diskId = diskId;
         final Vector2f _position = position;
         final Vector2f _velocity = velocity;
@@ -348,7 +348,7 @@ public class TheServer extends SimpleApplication {
         }
     }
     
-    public void RemovePointMessage(int diskId) {
+    public void SendRemovePointMessage(int diskId) {
         final int _diskId = diskId;
         try {
             outgoing.put(new Callable() {
