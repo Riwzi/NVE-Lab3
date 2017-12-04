@@ -52,10 +52,11 @@ public class TheServer extends SimpleApplication {
     
     private Ask ask = new Ask();
     private Game game = new Game(); //Modify game to take the outgoing/incoming queues as arguments, or do i just send incoming as enqueued Callables?
-    private float countdown = 25f;
+    private float countdown = 10f;
     private float countdownRemaining = 0f;
     private long delayUntilStart = 2000; //ms
     private final ArrayList<Integer> winners;
+    private Boolean isListening = false;
     
     private static final float SERVER_TIME_SEND_RATE = 30f;
     private static float time_since_last_time_update = 0;
@@ -129,7 +130,7 @@ public class TheServer extends SimpleApplication {
         //Generate all players
         while (values.hasMoreElements()) {
             int value = values.nextElement();
-            players.add(new Util.PlayerLight(game.getNextID(), value, positions.get(value), new Vector2f(), 0));
+            players.add(new Util.PlayerLight(game.getNextID(), value, positions.get(value-1), new Vector2f(), 0));
         }
         putConfig(players); //Add all players to the game
         
@@ -160,6 +161,7 @@ public class TheServer extends SimpleApplication {
                 }
             });
             game.startGame();
+            isListening = true;
             Game.increaseGameLength(delayUntilStart/1000);
         } catch(InterruptedException ex) {
             Logger.getLogger(TheServer.class.getName()).log(Level.SEVERE, null, ex);
@@ -170,7 +172,7 @@ public class TheServer extends SimpleApplication {
     public void simpleUpdate(float tpf) {
         if (game.isEnabled()) {
             if (Game.getRemainingTime() <= 0) {
-                
+                isListening = false;
                 game.resetIDs();
                 game.setEnabled(false);
                 ask.setEnabled(true);
@@ -178,14 +180,20 @@ public class TheServer extends SimpleApplication {
                 winners.clear();
                 int highestScore = 0;
                 Enumeration<Integer> values = this.connPlayerMap.values();
-                while (values.hasMoreElements()){
-                    int playerID = values.nextElement();
-                    System.out.println("Player: "+playerID);
-                    Disk player = game.getPlayer(playerID);
-                    if (player.getScore() > highestScore || highestScore == 0) {
-                        highestScore = player.getScore();
+                if (values.hasMoreElements()){
+                    int firstPlayerID = values.nextElement();
+                    Disk firstPlayer = game.getPlayer(firstPlayerID);
+                    highestScore = firstPlayer.getScore();
+                    
+                    while (values.hasMoreElements()){
+                        int playerID = values.nextElement();
+                        Disk player = game.getPlayer(playerID);
+                        if (player.getScore() > highestScore) {
+                            highestScore = player.getScore();
+                        }
                     }
                 }
+               
                 values = this.connPlayerMap.values();
                 while (values.hasMoreElements()){
                     int playerID = values.nextElement();
@@ -381,6 +389,9 @@ public class TheServer extends SimpleApplication {
     private class ServerListener implements MessageListener<HostedConnection> {
         @Override
         public void messageReceived(HostedConnection source, Message m) {
+            if (!isListening) {
+                return;
+            }
             if (m instanceof Util.MoveMessage) {
                 final int connectionId = source.getId();
                 final Util.MoveMessage msg = ((Util.MoveMessage) m);
@@ -444,7 +455,8 @@ public class TheServer extends SimpleApplication {
                     }
                 }
                 if (!assigned) {
-                    throw new RuntimeException("No playerID was available even though there should be at least one");
+                    // There was no open spot
+                    c.close("Try again later, the game is full");
                 }
             }
         }
