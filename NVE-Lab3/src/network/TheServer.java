@@ -66,8 +66,8 @@ public class TheServer extends SimpleApplication {
     public static void main(String[] args) {
         System.out.println("Server initializing");
         Util.initialiseSerializables();
-        new TheServer(Util.PORT).start(JmeContext.Type.Headless);
-        //new TheServer(Util.PORT).start();
+        //new TheServer(Util.PORT).start(JmeContext.Type.Headless);
+        new TheServer(Util.PORT).start();
     }
 
     public TheServer(int port) {
@@ -160,6 +160,7 @@ public class TheServer extends SimpleApplication {
                     return true;
                 }
             });
+            game.setPrediction(1f);
             game.startGame();
             isListening = true;
             Game.increaseGameLength(delayUntilStart/1000);
@@ -402,9 +403,14 @@ public class TheServer extends SimpleApplication {
                     public Object call() {
                         //Get the player disk
                         Player player = game.getPlayer(connPlayerMap.get(connectionId));
-
+                        
                         //Increase the velocity in the given direction
-                        player.addVelocity(msg.getAcceleration());
+                        System.out.println("GOT MOVEMESSAGE");
+                        ConcurrentHashMap<Integer, InformationReceived> updateinfos = game.getUpdateInfo();
+                        InformationReceived info = updateinfos.get(player.getId());
+                        System.out.println("BEFORE "+info.getVelocity());
+                        info.updateVelocityPrediction(msg.getAcceleration());
+                        System.out.println("AFTER "+info.getVelocity());
                         return true;
                     }
                 });

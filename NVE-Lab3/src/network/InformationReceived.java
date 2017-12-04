@@ -38,12 +38,19 @@ public class InformationReceived {
         nbOfDotsToRemove = 0;
     }
     
-    
-    public boolean updatePosition(){
-        if(seq1 > lastseq1){
-            return true;
-        }
-        return false;
+    public InformationReceived(Vector2f pos){
+        seq1 = 0;
+        seq2 = 0;
+        seq3 = 0;
+        lastseq1 = 0;
+        lastseq2 = 0;
+        lastseq3 = 0;
+        
+        position = pos;
+        velocity = new Vector2f();
+        score = 0;
+        time = 0;
+        nbOfDotsToRemove = 0;
     }
     
     public Vector2f getPosition(){
@@ -59,12 +66,10 @@ public class InformationReceived {
  
     }
     
-    
-    public boolean updateVelocity(){
-        if(seq2 > lastseq2){
-            return true;
+    public void updatePositionPrediction(Vector2f p) {
+        if (lastseq1 == seq1) {
+            position.add(p);
         }
-        return false;
     }
     
     public Vector2f getVelocity(){
@@ -79,6 +84,11 @@ public class InformationReceived {
         }
     }
     
+    public void updateVelocityPrediction(Vector2f v) {
+        if (lastseq2 == seq2) {
+            velocity = v;
+        }
+    }
     
     public boolean updateScore(){
         if(seq3 > lastseq3){
