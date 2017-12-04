@@ -125,7 +125,7 @@ public class Game extends BaseAppState {
     public static final int TIMEINDEX = -1;
     
     private final float acceleration = 150f;
-    private final float friction = 1f;
+    private final float friction = 4f;
     
     private int nextID = 0;
     
