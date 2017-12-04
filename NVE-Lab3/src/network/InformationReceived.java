@@ -9,7 +9,12 @@ import com.jme3.math.Vector2f;
 
 /**
  *
- * @author Quentin
+ * Class for maintaining predicted values of gamestate
+ * 
+ * @author Quentin, Rickard, Henrik
+ * Implementation, discussion, testing
+ * 
+ * 
  */
 public class InformationReceived {
     private int lastseq1, seq1;
@@ -67,7 +72,6 @@ public class InformationReceived {
     }
     
     public void updatePositionPrediction(Vector2f p) {
-        //System.out.println("last seq : " + lastseq1 + " seq " + seq1);
         if (lastseq1 == seq1) {
             this.position = this.position.add(p);
         }

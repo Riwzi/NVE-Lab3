@@ -9,7 +9,14 @@ import com.jme3.math.ColorRGBA;
 
 /**
  *
+ * Appstate for in-between games
+ * 
  * @author Rickard
+ * Implementation
+ * 
+ * @author Quentin
+ * small changes to fit with networked program
+ * 
  */
 public class Ask extends BaseAppState {
     

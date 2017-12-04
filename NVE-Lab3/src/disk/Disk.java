@@ -14,8 +14,11 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.scene.shape.Cylinder;
 /**
- *
+ *  Abstract class for disks
+ * 
  * @author Rickard
+ * Implemented the class
+ * 
  */
 public abstract class Disk extends Node implements Comparable<Disk>{
     protected AssetManager assetManager;

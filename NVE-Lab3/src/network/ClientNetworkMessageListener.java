@@ -27,7 +27,11 @@ import network.Util.*;
 
 /**
  *
+ * MessageListener for client
+ * 
  * @author Quentin
+ * Implementation
+ * 
  */
 public class ClientNetworkMessageListener
             implements MessageListener<Client>{
@@ -51,8 +55,6 @@ public class ClientNetworkMessageListener
         // these if statements is a clumsy but simple (and working) 
         // solution; better would be to code behavour in the message 
         // classes and call them on the message
-        
-        //System.out.println(((MyAbstractMessage)m).messageID);
         
         if (m instanceof Util.GameStartMessage) {
             
@@ -84,9 +86,7 @@ public class ClientNetworkMessageListener
             VelocityChangeMessage msg = (VelocityChangeMessage) m;
      
             InformationReceived info = updateInfos.get(msg.getDiskID());
-            //System.out.println(updateInfos.get(msg.getDiskID()).getVelocity());
             info.setVelocity(msg.getMessageID(), msg.getNewVelocity());
-            //System.out.println(updateInfos.get(msg.getDiskID()).getVelocity());
 
 
         }
@@ -98,8 +98,6 @@ public class ClientNetworkMessageListener
         }
         else if(m instanceof PositionAndVelocityChangeMessage){
             PositionAndVelocityChangeMessage msg = (PositionAndVelocityChangeMessage) m;
-            //System.out.println("disk ID: " + msg.getDiskID());
-           // System.out.println(updateInfos);
             InformationReceived info = updateInfos.get(msg.getDiskID());
             info.setPosition(msg.getMessageID(), msg.getNewPosition());
             info.setVelocity(msg.getMessageID(), msg.getNewVelocity());

@@ -6,7 +6,11 @@ import com.jme3.asset.AssetManager;
 
 /**
  *
+ * Class for player disks
+ * 
  * @author Rickard
+ * implementation
+ * 
  */
 public class Player extends Disk{
     private String name;

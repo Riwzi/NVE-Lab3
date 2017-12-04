@@ -45,7 +45,25 @@ import static network.Util.UP;
 
 /**
  *
+ * AppState for the game. Has all general game logic
+ * 
  * @author Rickard
+ * Wrote base file, prediction
+ * Refactor to work with both server and client
+ * Discussion about implementation
+ * Testing
+ * 
+ * @author Quentin
+ * Implementation of prediction
+ * Refactor to work with both server and client
+ * Discussion about implementation
+ * Testing
+ * 
+ * @author Henrik
+ * Implementation of prediction
+ * Discussion about implementation
+ * Testing
+ * 
  */
 public class Game extends BaseAppState {
     
@@ -233,14 +251,6 @@ public class Game extends BaseAppState {
         playerName.put(7, "VII");
         playerName.put(8, "VIII");
         playerName.put(9, "IX");
-        /*for (int i = 0; i<N_PLAYERS; i++) {
-            addLocalPlayer(i, list.get(i));
-        }*/
-        /*
-        for (int i = N_PLAYERS; i<9; i++) {
-            addPlayer(i, list.get(i));
-        }
-        */
     }
     
     private void initDisks() {
@@ -514,31 +524,10 @@ public class Game extends BaseAppState {
                 } else {
                     newY = 0;
                 }
-//                System.out.println("currentpos: "+current_pos);
-//                System.out.println("predictedpos: "+predicted_pos);
-//                System.out.println("infopos: "+info.getPosition());
-//                System.out.println("currentvel: "+current_vel);
-//                System.out.println("predictedvel: "+predicted_vel);
-//                System.out.println("infovel: "+info.getVelocity());
                 
                 info.updateVelocityPrediction(new Vector2f(newX, newY));
                 info.updatePositionPrediction(info.getVelocity().mult(tpf));
                 
-//                System.out.println("infovel after: "+info.getVelocity());
-//                System.out.println("add this: "+info.getVelocity().mult(tpf));
-//                System.out.println("infopos after: "+info.getPosition());
-
-               /* //Collision detection with frame
-                float boundary = FREE_AREA_WIDTH/2;
-                d.frameCollision(-boundary, boundary, -boundary, boundary, tpf);
-
-                //Collision detection with other disks
-                for (Disk otherDisk: diskStore) {
-                    if (!d.getId().equals(otherDisk.getId())) {
-                        d.diskCollision(otherDisk, tpf);
-                    }
-                }*/
-
                 if (d instanceof Player) {
                     text += ((Player) d).getName() + ": " + d.getScore() + "\n";
                 }

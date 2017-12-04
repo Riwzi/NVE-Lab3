@@ -6,8 +6,13 @@ import com.jme3.asset.AssetManager;
 import com.jme3.scene.Spatial;
 
 /**
- *
- * @author Rickard
+ *  Class for positive disks
+ * 
+ * @author Rickard,
+ * Implementation
+ * 
+ * @author Quentin
+ *  Discussion about implementation
  */
 public class PositiveDisk extends Disk {
     private int value;

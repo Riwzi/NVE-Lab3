@@ -15,7 +15,13 @@ import network.Util.PlayerInput;
 
 /**
  *
+ * Runnable for sending packets on the client
+ * 
  * @author Quentin
+ * Implementation
+ * 
+ * @author Henrik
+ * Implemented packet aggregation
  */
 public class ClientSender implements Runnable{
     private static final float CLIENT_SEND_RATE = 30f;
@@ -57,9 +63,4 @@ public class ClientSender implements Runnable{
             }
         }
     }
-    
-    
-    
-    
-    
 }

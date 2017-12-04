@@ -28,7 +28,15 @@ import network.Util.*;
 
 /**
  *
+ * Client simpleApplication for running the game.
+ * 
  * @author Quentin
+ * Implementation
+ * Discussion
+ * Testing
+ * 
+ * @author Rickard, Henrik
+ * Bugfixes, discussion, Testing
  */
 public class TheClient extends SimpleApplication implements ClientStateListener{
 

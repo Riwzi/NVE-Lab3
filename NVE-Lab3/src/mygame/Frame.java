@@ -7,8 +7,11 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.shape.Box;
 /**
+ * 
+ * Class for the frame of the gamearea
  *
  * @author Rickard
+ * implementation
  */
 public class Frame extends Node {
     AssetManager assetManager;

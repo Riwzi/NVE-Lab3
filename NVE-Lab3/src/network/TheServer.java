@@ -35,11 +35,19 @@ import java.util.logging.Logger;
 import mygame.Ask;
 import mygame.Game;
 /**
- * This program demonstrates networking in JMonkeyEngine using SpiderMonkey, and
- * contains the server.
+ * Simpleapplication for running the game as a server
  *
  *
- * @author hj
+ * @author Rickard
+ * Base implementation
+ * Discussion about implementation
+ * Bugfixing
+ * Testing
+ * 
+ * @author Quentin, Henrik
+ * Discussion about implementation
+ * Bugfixing
+ * Testing
  */
 public class TheServer extends SimpleApplication {
 
@@ -51,7 +59,7 @@ public class TheServer extends SimpleApplication {
     private BiMap<Integer,Integer> connPlayerMap; //Maps the connectionId to a playerId (need to have this as a map if lots of clients connect and disconnect, as we only have 9 playerids).
     
     private Ask ask = new Ask();
-    private Game game = new Game(); //Modify game to take the outgoing/incoming queues as arguments, or do i just send incoming as enqueued Callables?
+    private Game game = new Game();
     private float countdown = 10f;
     private float countdownRemaining = 0f;
     private long delayUntilStart = 2000; //ms

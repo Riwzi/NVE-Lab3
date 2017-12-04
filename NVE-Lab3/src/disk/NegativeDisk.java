@@ -5,8 +5,11 @@ import com.jme3.scene.Geometry;
 import com.jme3.asset.AssetManager;
 
 /**
- *
+ * Class for negative disks
+ * 
+ * 
  * @author Rickard
+ * implemented class
  */
 public class NegativeDisk extends Disk {
     private int value;
