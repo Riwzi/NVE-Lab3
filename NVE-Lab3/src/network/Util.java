@@ -10,7 +10,8 @@ import java.util.ArrayList;
 
 public class Util {
     
-    public static final String HOSTNAME = "127.0.0.1";
+    public static final String HOSTNAME = "130.240.156.217";
+    
     public static final int PORT = 7006;
     public static final int UP = 0;
     public static final int DOWN = 1;
