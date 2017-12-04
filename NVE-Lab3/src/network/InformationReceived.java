@@ -68,7 +68,7 @@ public class InformationReceived {
     
     public void updatePositionPrediction(Vector2f p) {
         if (lastseq1 == seq1) {
-            position.add(p);
+            this.position = this.position.add(p);
         }
     }
     

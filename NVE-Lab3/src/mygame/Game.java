@@ -266,8 +266,6 @@ public class Game extends BaseAppState {
     private void addNegative(Vector2f position, Vector2f velocity) {
         NegativeDisk negative = new NegativeDisk(sapp.getAssetManager(), NEGDISK_R, getNextID(), INITIAL_NEGATIVE);
         InformationReceived info = new InformationReceived(position);
-        info.updatePositionPrediction(position);
-        System.out.println("IN addNegative: "+info.getPosition());
         updateInfos.put(negative.getId(), info);
 
         Geometry negativeGeometry = negative.createGeometry(NEGDISK_R, FRAME_THICKNESS);
@@ -285,7 +283,6 @@ public class Game extends BaseAppState {
     private void addPositive(Vector2f position, Vector2f velocity) {
         PositiveDisk positive = new PositiveDisk(sapp.getAssetManager(), POSDISK_R, getNextID(), INITIAL_POSITIVE);
         InformationReceived info = new InformationReceived(position);
-        info.updatePositionPrediction(position);
         updateInfos.put(positive.getId(), info);
 
         Geometry positiveGeometry = positive.createGeometry(POSDISK_R, FRAME_THICKNESS);
@@ -334,7 +331,6 @@ public class Game extends BaseAppState {
         String name = playerName.get(player_name_id);
         Player player = new Player(sapp.getAssetManager(), PLAYER_R, player_id, name);
         InformationReceived info = new InformationReceived(position);
-        info.updatePositionPrediction(position);
         updateInfos.put(player.getId(), info);
 
         Geometry playerGeometry = player.createGeometry(PLAYER_R, FRAME_THICKNESS, ColorRGBA.Blue);
@@ -369,7 +365,6 @@ public class Game extends BaseAppState {
         String name = playerName.get(player_name_id);
         Player player = new Player(sapp.getAssetManager(), PLAYER_R, player_id, name);
         InformationReceived info = new InformationReceived(position);
-        info.updatePositionPrediction(position);
         updateInfos.put(player.getId(), info);
 
         Geometry playerGeometry = player.createGeometry(PLAYER_R, FRAME_THICKNESS, ColorRGBA.Black);
@@ -482,16 +477,10 @@ public class Game extends BaseAppState {
                 Vector2f current_pos = d.getPosition();
                 Vector2f predicted_pos = info.getPosition().subtract(d.getPosition());
                 d.setPosition(current_pos.add(predicted_pos.mult(PREDICTION_CONST)));
-                System.out.println("DISK");
-                System.out.println("currentpos: "+current_pos);
-                System.out.println("predictedpos: "+predicted_pos);
-                System.out.println("infopos: "+info.getPosition());
+                
                 Vector2f current_vel = d.getVelocity();
                 Vector2f predicted_vel = info.getVelocity().subtract(d.getVelocity());
                 d.setVelocity(current_vel.add(predicted_vel.mult(PREDICTION_CONST)));
-                System.out.println("currentvel: "+current_vel);
-                System.out.println("predictedvel: "+predicted_vel);
-                System.out.println("infovel: "+info.getVelocity());
 
                 if (info.updateScore()) {
                     d.setScore(info.getScore());
@@ -524,8 +513,19 @@ public class Game extends BaseAppState {
                 } else {
                     newY = 0;
                 }
+//                System.out.println("currentpos: "+current_pos);
+//                System.out.println("predictedpos: "+predicted_pos);
+//                System.out.println("infopos: "+info.getPosition());
+//                System.out.println("currentvel: "+current_vel);
+//                System.out.println("predictedvel: "+predicted_vel);
+//                System.out.println("infovel: "+info.getVelocity());
+                
                 info.updateVelocityPrediction(new Vector2f(newX, newY));
                 info.updatePositionPrediction(info.getVelocity().mult(tpf));
+                
+//                System.out.println("infovel after: "+info.getVelocity());
+//                System.out.println("add this: "+info.getVelocity().mult(tpf));
+//                System.out.println("infopos after: "+info.getPosition());
 
                /* //Collision detection with frame
                 float boundary = FREE_AREA_WIDTH/2;

@@ -66,8 +66,8 @@ public class TheServer extends SimpleApplication {
     public static void main(String[] args) {
         System.out.println("Server initializing");
         Util.initialiseSerializables();
-        //new TheServer(Util.PORT).start(JmeContext.Type.Headless);
-        new TheServer(Util.PORT).start();
+        new TheServer(Util.PORT).start(JmeContext.Type.Headless);
+        //new TheServer(Util.PORT).start();
     }
 
     public TheServer(int port) {
@@ -226,6 +226,12 @@ public class TheServer extends SimpleApplication {
                     float boundary = game.getFreeAreaWidth()/2;
                     if (disk.frameCollision(-boundary, boundary, -boundary, boundary, tpf)) {
                         //If there was a collision with the frame, queue a update package
+                        ConcurrentHashMap<Integer, InformationReceived> updateinfos = game.getUpdateInfo();
+                        InformationReceived info = updateinfos.get(disk.getId());
+                        info.updateVelocityPrediction(disk.getVelocity());
+                        info.updatePositionPrediction(disk.getPosition().subtract(info.getPosition()));
+                        
+                        
                         final Disk theDisk = disk;
                         try {
                             outgoing.put(new Callable() {
@@ -249,6 +255,15 @@ public class TheServer extends SimpleApplication {
                                 final Disk theOtherDisk = otherDisk;
                                 SendPositionAndVelocityMessage(theDisk.getId(), theDisk.getPosition(), theDisk.getVelocity());
                                 SendPositionAndVelocityMessage(theOtherDisk.getId(), theOtherDisk.getPosition(), theOtherDisk.getVelocity());
+                                
+                                ConcurrentHashMap<Integer, InformationReceived> updateinfos = game.getUpdateInfo();
+                                InformationReceived info = updateinfos.get(disk.getId());
+                                info.updateVelocityPrediction(disk.getVelocity());
+                                info.updatePositionPrediction(disk.getPosition().subtract(info.getPosition()));
+                                
+                                info = updateinfos.get(otherDisk.getId());
+                                info.updateVelocityPrediction(otherDisk.getVelocity());
+                                info.updatePositionPrediction(otherDisk.getPosition().subtract(info.getPosition()));
                                 
                                 if (theDisk instanceof Player) {
                                     SendScoreChangeMessage(theDisk.getId(), theDisk.getScore());
@@ -405,12 +420,9 @@ public class TheServer extends SimpleApplication {
                         Player player = game.getPlayer(connPlayerMap.get(connectionId));
                         
                         //Increase the velocity in the given direction
-                        System.out.println("GOT MOVEMESSAGE");
                         ConcurrentHashMap<Integer, InformationReceived> updateinfos = game.getUpdateInfo();
                         InformationReceived info = updateinfos.get(player.getId());
-                        System.out.println("BEFORE "+info.getVelocity());
-                        info.updateVelocityPrediction(msg.getAcceleration());
-                        System.out.println("AFTER "+info.getVelocity());
+                        info.updateVelocityPrediction(info.getVelocity().add(msg.getAcceleration()));
                         return true;
                     }
                 });
